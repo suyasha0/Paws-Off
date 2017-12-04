@@ -16,12 +16,12 @@ function setup() {
   world = new World('VRScene');
 
   // set up our leap controller
-  leapController = new Leap.Controller({
-    enableGestures: true
-  });
+  // leapController = new Leap.Controller({
+  //   enableGestures: true
+  // });
 
   // every time the Leap provides us with hand data we will ask it to run this function
-  leapController.loop(handleHandData);
+  //leapController.loop(handleHandData);
 
   // create a plane to serve as our "ground"
   var g = new Plane({
@@ -30,7 +30,9 @@ function setup() {
     z: 0,
     width: 100,
     height: 100,
-    asset: 'stone',
+    red:125,
+    green:125,
+    blue:125,
     repeatX: 100,
     repeatY: 100,
     rotationX: -90,
@@ -63,7 +65,10 @@ function setup() {
     green: 255,
     blue: 0
   });
+ // world.appendChild(g);
+  world.add(hand1);
+  world.add(hand2);
   // add the hands to our camera - this will force it to always show up on the user's display
-  world.camera.holder.appendChild(hand1.tag);
-  world.camera.holder.appendChild(hand2.tag);
+  // world.camera.holder.appendChild(hand1.tag);
+  // world.camera.holder.appendChild(hand2.tag);
 }

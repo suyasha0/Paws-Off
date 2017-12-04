@@ -40,7 +40,6 @@ function setup() {
   // add the plane to our world
   world.add(g);
 
-
   // now add our hands to the world
   hand1 = new Box({
     x: -0.5,

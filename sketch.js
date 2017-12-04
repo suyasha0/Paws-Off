@@ -29,16 +29,28 @@ function setup() {
     y: 0,
     z: 0,
     width: 100,
-    height: 100,
+    height: 1000,
     // red:125,
     // green:125,
     // blue:125,
     asset: 'stone',
-    repeatX: 100,
-    repeatY: 100,
+    repeatX: 100, //width
+    repeatY: 1000, //length of plane ground
     rotationX: -90,
     metalness: 0.25
   });
+
+  var screen = new Plane({
+    x: 0,
+    y: 0,
+    z: 0,
+    width: 100,
+    height: 100,
+    red:125,
+    green:125,
+    blue:125,
+  })
+  world.add(screen);
 
   // add the plane to our world
   world.add(g);
@@ -73,11 +85,26 @@ function setup() {
 function draw() {
   // always move the player forward a little bit - their movement vector
   // is determined based on what they are looking at
-  world.moveUserForward(0.05);
+ // world.moveUserForward(0.05);
+
+  var pos = world.getUserPosition();
+  
+    // now evaluate
+    if (pos.x > 47) { //width of plane, looks good when comes to edge
+      world.setUserPosition(47, pos.y, pos.z);
+    } else if (pos.x < -47) {
+      world.setUserPosition(-47, pos.y, pos.z);
+    }
+    //have above just blcok u from going off side 
+
+    if (pos.z > 500) { //if it goes past the length
+      world.setUserPosition(pos.x, pos.y, -500);
+    } else if (pos.z < -500) {
+      world.setUserPosition(pos.x, pos.y, 500);
+    }
 }
 
 function handleHandData(frame) {
-  
     // make sure we have exactly one hand being detected
     if (frame.hands.length == 2) {
       // get the position of the two hands
@@ -106,7 +133,6 @@ function handleHandData(frame) {
         hy2 = handPosition1[1];
         hz2 = handPosition1[2];
       }
-  
       console.log(hx1 + "," + hy1 + " - " + hx2 + ", " + hy2);
   
       // x is left-right, y is up-down, z is forward-back

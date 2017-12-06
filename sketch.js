@@ -7,6 +7,8 @@ var leapController;
 // our hand displays (simple shapes that will show up in front of the user)
 var hand1, hand2;
 
+var g;
+
 function setup() {
   // no canvas needed
   noCanvas();
@@ -24,7 +26,7 @@ function setup() {
   leapController.loop(handleHandData);
 
   // create a plane to serve as our "ground"
-  var g = new Plane({
+  g = new Plane({
     x: 0,
     y: 0,
     z: 0,
@@ -40,17 +42,17 @@ function setup() {
     metalness: 0.25
   });
 
-  var screen = new Plane({
+  var startScreen = new Plane({
     x: 0,
     y: 0,
     z: 0,
     width: 100,
     height: 100,
-    red:125,
+    red:0,
     green:125,
     blue:125,
   })
-  world.add(screen);
+  world.add(startScreen);
 
   // add the plane to our world
   world.add(g);
@@ -78,6 +80,7 @@ function setup() {
     green: 255,
     blue: 0
   });
+  console.log(g);
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
@@ -85,7 +88,10 @@ function setup() {
 function draw() {
   // always move the player forward a little bit - their movement vector
   // is determined based on what they are looking at
- // world.moveUserForward(0.05);
+    //world.moveUserForward(0.05);
+     g.setZ(g.getZ()+.05);
+    // console.log(g);
+    // console.log(g.y);
 
   var pos = world.getUserPosition();
   

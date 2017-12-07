@@ -8,6 +8,8 @@ var hand1, hand2;
 //global ground to move in draw
 var g;
 
+var lightningBolt;
+
 
 // 0 : startscreen, 1 : play, -1 : endscreen
 var gameMode = 0;
@@ -38,6 +40,8 @@ function setup() {
     rotationX: -90,
     metalness: 0.25
   });
+ // add the plane to our world
+  world.add(g);
 
   startPlane = new Plane({
     x: 0,
@@ -47,8 +51,7 @@ function setup() {
     height: 15,
     asset: 'startscreen'
   })
-
-  world.add(startPlane);
+ // world.add(startPlane);
 
   hand1 = new Box({
 	x: -0.5,
@@ -74,7 +77,7 @@ function setup() {
 	blue: 0
   });
 
-   pokeball = new OBJ({
+  pokeball = new OBJ({
 	asset: 'ball_obj',
 	mtl: 'ball_mtl',
 	x: 5,
@@ -89,12 +92,26 @@ function setup() {
 
   world.add(pokeball);
 
+  // for (var i = 0;i<100;i++){
+  lightningBolt = new OBJ({
+    asset: 'lightningBolt_obj',
+    mtl: 'lightningBolt_mtl',
+    x: i0
+    y: 4,
+    z: 0,
+    rotationX:-90,
+    rotationY:0,
+    scaleX:.05,
+    scaleY:.05,
+    scaleZ:.05,
+  });
+  world.add(lightningBolt);
+  // }
+
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
 
-  // add the plane to our world
-  world.add(g);
 
 }
 function draw() {

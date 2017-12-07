@@ -8,6 +8,7 @@ var hand1, hand2;
 //global ground to move in draw
 var g;
 
+var pokeballs = [];
 
 // 0 : startscreen, 1 : play, -1 : endscreen
 var gameMode = 0;
@@ -74,21 +75,6 @@ function setup() {
 	blue: 0
   });
 
-   pokeball = new OBJ({
-	asset: 'ball_obj',
-	mtl: 'ball_mtl',
-	x: 5,
-	y: 1.3,
-	z: 0,
-	rotationX:0,
-	rotationY:180,
-	scaleX:.3,
-	scaleY:.3,
-	scaleZ:.3,
-  });
-
-  world.add(pokeball);
-
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
@@ -124,6 +110,7 @@ function draw() {
     } else if (pos.z < -500) {
       world.setUserPosition(pos.x, pos.y, 500);
     }
+
 }
 
 function startScreen(){
@@ -134,7 +121,23 @@ function startScreen(){
 function play(){
 
 	//make ground move forward
-  g.setZ(g.getZ()+.05);
+    //g.setZ(g.getZ()+.05);       **commenting this because im getting dizzy testing.
+
+    var create = random(100);
+	if(create<6){
+	 	var temp = new Pokeball(random(-10,10), 1, -5);
+	 	pokeballs.push( temp );
+	}
+
+	for (var i = 0; i < pokeballs.length; i++) {
+		var result = pokeballs[i].move();
+		if (result == "gone") {
+			pokeballs.splice(i, 1);
+			i-=1;
+		}
+	}
+
+	console.log(world.getUserPosition());
 
 }
 
@@ -218,3 +221,29 @@ function handleHandData(frame) {
       });
     }
   }
+
+  function Pokeball(x,y,z) {
+
+	this.pokeball = new OBJ({
+		asset: 'ball_obj',
+		mtl: 'ball_mtl',
+		x:x, y:y, z:z,
+		rotationX:0,
+		rotationY:90,
+		scaleX:.3,
+		scaleY:.3,
+		scaleZ:.3,
+	});
+
+	world.add(this.pokeball);
+
+	this.move = function(){
+		this.pokeball.nudge(0, 0, .15);
+
+		if(y<0){
+			world.remove(this.pokeball);
+			return "gone";
+		}
+	}
+
+}

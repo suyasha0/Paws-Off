@@ -1,11 +1,17 @@
-// variable to hold a reference to our A-Frame world
-var world;
+
+var world, startPlane;
+
 // our Leap motion hand sensor controller object (instantiated inside of 'setup');
 var leapController;
 // our hand displays (simple shapes that will show up in front of the user)
 var hand1, hand2;
 //global ground to move in draw
 var g;
+
+
+// 0 : startscreen, 1 : play, -1 : endscreen
+var gameMode = 0;
+
 function setup() {
   // no canvas needed
   noCanvas();
@@ -26,66 +32,68 @@ function setup() {
     z: 0,
     width: 100,
     height: 1000,
-    // red:125,
-    // green:125,
-    // blue:125,
-    asset: 'stone',
+    asset: 'grass',
     repeatX: 100, //width
     repeatY: 1000, //length of plane ground
     rotationX: -90,
     metalness: 0.25
   });
 
-  var startScreen = new Plane({
+  startPlane = new Plane({
     x: 0,
-    y: 0,
-    z: 0,
-    width: 100,
-    height: 100,
-    red:0,
-    green:125,
-    blue:125,
+    y: 3,
+    z: -3,
+    width: 15,
+    height: 15,
+    asset: 'startscreen'
   })
-//  world.add(startScreen);
+
+  world.add(startPlane);
+
+  hand1 = new Box({
+	x: -0.5,
+	y: 0,
+	z: -1,
+	width: 0.1,
+	height: 0.1,
+	depth: 0.1,
+	red: 255,
+	green: 0,
+	blue: 0
+  });
+
+  hand2 = new Box({
+	x: 0.5,
+	y: 0,
+	z: -1,
+	width: 0.1,
+	height: 0.1,
+	depth: 0.1,
+	red: 0,
+	green: 255,
+	blue: 0
+  });
+
+
+  // add the hands to our camera - this will force it to always show up on the user's display
+  world.camera.holder.appendChild(hand1.tag);
+  world.camera.holder.appendChild(hand2.tag);
 
   // add the plane to our world
   world.add(g);
 
-  // now add our hands to the world
-  hand1 = new Box({
-    x: -0.5,
-    y: 0,
-    z: -1,
-    width: 0.1,
-    height: 0.1,
-    depth: 0.1,
-    red: 255,
-    green: 0,
-    blue: 0
-  });
-  hand2 = new Box({
-    x: 0.5,
-    y: 0,
-    z: -1,
-    width: 0.1,
-    height: 0.1,
-    depth: 0.1,
-    red: 0,
-    green: 255,
-    blue: 0
-  });
-  console.log(g);
-  // add the hands to our camera - this will force it to always show up on the user's display
-  world.camera.holder.appendChild(hand1.tag);
-  world.camera.holder.appendChild(hand2.tag);
 }
 function draw() {
-  // always move the player forward a little bit - their movement vector
-  // is determined based on what they are looking at
-    //world.moveUserForward(0.05);
-     g.setZ(g.getZ()+.05); //Z is ground forward
-    // console.log(g);
-    // console.log(g.y);
+
+  if(gameMode==0){
+  	startScreen();
+  }     
+  else if(gameMode==1){
+  	play();
+  }
+  else{
+  	endScreen();
+  }
 
   var pos = world.getUserPosition();
   
@@ -102,6 +110,23 @@ function draw() {
     } else if (pos.z < -500) {
       world.setUserPosition(pos.x, pos.y, 500);
     }
+}
+
+function startScreen(){
+	hand1.hide();
+	hand2.hide();
+}
+
+function play(){
+
+	//make ground move forward
+  g.setZ(g.getZ()+.05);
+
+}
+
+function endScreen(){
+	hand1.hide();
+	hand2.hide();
 }
 
 function handleHandData(frame) {
@@ -162,5 +187,20 @@ function handleHandData(frame) {
         var diff = y1 - y2;
         world.camera.nudgePosition( map(diff, 0, 1, 0, 0.1), 0, 0);
       }
+    }
+
+    if(frame.valid && frame.gestures.length > 0 && gameMode==0){
+      frame.gestures.forEach(function(gesture){
+        switch (gesture.type){
+          case "swipe":
+
+         	  world.remove(startPlane);
+         	  hand1.show();
+			  hand2.show();
+
+              gameMode=1;
+              break;
+        }
+      });
     }
   }

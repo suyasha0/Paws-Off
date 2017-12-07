@@ -1,12 +1,13 @@
+
 var world, startPlane;
 
 // our Leap motion hand sensor controller object (instantiated inside of 'setup');
 var leapController;
-
 // our hand displays (simple shapes that will show up in front of the user)
 var hand1, hand2;
-
+//global ground to move in draw
 var g;
+
 
 // 0 : startscreen, 1 : play, -1 : endscreen
 var gameMode = 0;
@@ -14,16 +15,13 @@ var gameMode = 0;
 function setup() {
   // no canvas needed
   noCanvas();
-
   // construct the A-Frame world
   // this function requires a reference to the ID of the 'a-scene' tag in our HTML document
   world = new World('VRScene');
-
   // set up our leap controller
   leapController = new Leap.Controller({
     enableGestures: true
   });
-
   // every time the Leap provides us with hand data we will ask it to run this function
   leapController.loop(handleHandData);
 
@@ -49,6 +47,7 @@ function setup() {
     height: 15,
     asset: 'startscreen'
   })
+
   world.add(startPlane);
 
   hand1 = new Box({
@@ -135,9 +134,7 @@ function startScreen(){
 function play(){
 
 	//make ground move forward
-	g.setZ(g.getZ()+.05);
-
-
+  g.setZ(g.getZ()+.05);
 
 }
 

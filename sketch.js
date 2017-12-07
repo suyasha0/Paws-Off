@@ -74,6 +74,20 @@ function setup() {
 	blue: 0
   });
 
+   pokeball = new OBJ({
+	asset: 'ball_obj',
+	mtl: 'ball_mtl',
+	x: 5,
+	y: 1.3,
+	z: 0,
+	rotationX:0,
+	rotationY:180,
+	scaleX:.3,
+	scaleY:.3,
+	scaleZ:.3,
+  });
+
+  world.add(pokeball);
 
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);

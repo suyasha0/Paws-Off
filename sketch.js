@@ -76,7 +76,7 @@ function setup() {
     height: 15,
     asset: 'startscreen'
   });
-//  world.add(startPlane);
+  world.add(startPlane);
 
   pokeball = new OBJ({
     asset: 'ball_obj',

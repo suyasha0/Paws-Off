@@ -9,7 +9,7 @@ var g;
 var lightningContainer; var fireContainer; 
 
 var zRot = true;
-var z =0;
+var z =0;var y=0;
 
 var lightningBolt; var fire;
 //pokeball array
@@ -80,16 +80,16 @@ function setup() {
  world.add(startPlane);
 
   pokeball = new OBJ({
-	asset: 'ball_obj',
-	mtl: 'ball_mtl',
-	x: 5,
-	y: 1.3,
-	z: 0,
-	rotationX:0,
-	rotationY:180,
-	scaleX:.3,
-	scaleY:.3,
-	scaleZ:.3,
+    asset: 'ball_obj',
+    mtl: 'ball_mtl',
+    x: 5,
+    y: 1.3,
+    z: 0,
+    rotationX:0,
+    rotationY:180,
+    scaleX:.3,
+    scaleY:.3,
+    scaleZ:.3,
   });
   world.add(pokeball);
 
@@ -97,7 +97,7 @@ function setup() {
   lightningBolt = new OBJ({
     asset: 'lightningBolt_obj',
     mtl: 'lightningBolt_mtl',
-    x: 0,
+    x: -1,
     y: 1,
     z: 0,
     rotationX:60,
@@ -109,10 +109,21 @@ function setup() {
   lightningContainer.addChild(lightningBolt);
   world.add(lightningContainer);
 
-  world.add(Fireball());
+  Ice = new OBJ({
+    asset: 'ice_obj',
+    mtl: 'ice_mtl',
+    x: 0,
+    y: .5,
+    z: 0,
+    rotationX:-135,
+    rotationY:0,
+    scaleX:.05,
+    scaleY:.05,
+    scaleZ:.05,
+  });
+  world.add(Ice);
 
-  console.log("fire X", world);
-  //fire.setRotation(fire.getRotationX(),fire.getRotationY(), 10);
+  world.add(Fireball());
 
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
@@ -120,37 +131,15 @@ function setup() {
 
 }
 
-function Fireball(){
-  fireContainer = new Container3D({x:0,y:0,z:0});
-  fire = new OBJ({
-    asset: 'fire_obj',
-    mtl: 'fire_mtl',
-    x: 0,
-    y: 2,
-    z: 0,
-    rotationX:120,
-    rotationY:0,
-    rotationZ:-5,
-    scaleX:.02,
-    scaleY:.02,
-    scaleZ:.02,
-  });
-  fireContainer.addChild(fire);
-  return fireContainer;
-}
-
-//world.add(fireContainer);
-
 function draw() {
   if(gameMode==0){
   	startScreen();
-  }     
-  else if(gameMode==1){
+  } else if(gameMode==1){
   	play();
-  }
-  else{
+  } else{
   	endScreen();
   }
+<<<<<<< HEAD
   //fire.spinY(1);
   //fire.spinX(2);
   // if (fire.getRotationZ() ==5){
@@ -167,6 +156,23 @@ function draw() {
   // console.log("fire",fire.getRotationZ());
   
 //  console.log("fire",fire);
+=======
+  Ice.spinZ(1);
+  if (z>=10){
+    zRot = false;
+  }
+  if (z<=-10){
+    zRot = true;
+  }
+  if (zRot){
+    z+=2;
+  } else{
+    z-=2;
+  }
+  y+=1;
+  fire.rotateZ(z);
+  //lightningBolt.rotateY(y);
+>>>>>>> 63eb07a22d287a9825b8ea67e5c9daf8b609adfe
   //moving lightning away kinda
   // lightningContainer.setZ(lightningContainer.getZ() - .05);
   // lightningContainer.setY(lightningContainer.getY() + .02);
@@ -178,7 +184,6 @@ function draw() {
     world.setUserPosition(-47, pos.y, pos.z);
   }
   //have above just blcok u from going off side 
-
   if (pos.z > 500) { //if it goes past the length
     world.setUserPosition(pos.x, pos.y, -500);
   } else if (pos.z < -500) {
@@ -305,27 +310,45 @@ function handleHandData(frame) {
   }
 
   function Pokeball(x,y,z) {
+    this.pokeball = new OBJ({
+      asset: 'ball_obj',
+      mtl: 'ball_mtl',
+      x:x, y:y, z:z,
+      rotationX:0,
+      rotationY:90,
+      scaleX:.3,
+      scaleY:.3,
+      scaleZ:.3,
+    });
 
-	this.pokeball = new OBJ({
-		asset: 'ball_obj',
-		mtl: 'ball_mtl',
-		x:x, y:y, z:z,
-		rotationX:0,
-		rotationY:90,
-		scaleX:.3,
-		scaleY:.3,
-		scaleZ:.3,
-	});
-
-	world.add(this.pokeball);
+    world.add(this.pokeball);
 
 	this.move = function(){
 		this.pokeball.nudge(0, 0, .2);
 
-		if(y<0){
-			world.remove(this.pokeball);
-			return "gone";
-		}
-	}
+      if(y<0){
+        world.remove(this.pokeball);
+        return "gone";
+      }
+    }
 
+  }
+
+function Fireball(){
+  fireContainer = new Container3D({x:0,y:0,z:0});
+  fire = new OBJ({
+    asset: 'fire_obj',
+    mtl: 'fire_mtl',
+    x: 1,
+    y: 2,
+    z: 0,
+    rotationX:120,
+    rotationY:0,
+    rotationZ:-5,
+    scaleX:.02,
+    scaleY:.02,
+    scaleZ:.02,
+  });
+  fireContainer.addChild(fire);
+  return fireContainer;
 }

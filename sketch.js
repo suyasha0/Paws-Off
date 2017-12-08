@@ -40,9 +40,9 @@ function setup() {
     red: 255,
     green: 0,
     blue: 0
-    });
+   });
   
-    hand2 = new Box({
+  hand2 = new Box({
     x: 0.5,
     y: 0,
     z: -1,
@@ -52,7 +52,8 @@ function setup() {
     red: 0,
     green: 255,
     blue: 0
-    });
+  });
+
   g = new Plane({
     x: 0,
     y: 0,
@@ -76,7 +77,7 @@ function setup() {
     height: 15,
     asset: 'startscreen'
   });
-//  world.add(startPlane);
+ world.add(startPlane);
 
   pokeball = new OBJ({
 	asset: 'ball_obj',
@@ -157,22 +158,9 @@ function draw() {
     // y = fire.getRotationY();
     // z+=1;
     // fire.setRotation(x,y,z);
-  if (z>=5){
-    zRot = false;
-  }
-  if (z<=-5){
-    zRot = true;
-  }
-  if (zRot){
-    z+=1;
-  } else{
-    z-=1;
-  }
-  
-   fire.rotateZ(z);
   // console.log("fire rot X",fire.getRotationX());
   // fire.setRotation(120, 0, 20);
-  console.log("FIRE", fire.getRotationX(), fire.getRotationY(), fire.getRotationZ());
+  //console.log("FIRE", fire.getRotationX(), fire.getRotationY(), fire.getRotationZ());
   // } else{
   //   fire.setRotation(fire.getRotationX(),fire.getRotationY(), 5);
   // }
@@ -219,6 +207,20 @@ function play(){
 		}
 	}
 	console.log(world.getUserPosition());
+
+	if (z>=5){
+	zRot = false;
+	}
+	if (z<=-5){
+	zRot = true;
+	}
+	if (zRot){
+	z+=1;
+	} else{
+	z-=1;
+	}
+  
+    fire.rotateZ(z);
 }
 
 function endScreen(){
@@ -318,7 +320,7 @@ function handleHandData(frame) {
 	world.add(this.pokeball);
 
 	this.move = function(){
-		this.pokeball.nudge(0, 0, .15);
+		this.pokeball.nudge(0, 0, .2);
 
 		if(y<0){
 			world.remove(this.pokeball);

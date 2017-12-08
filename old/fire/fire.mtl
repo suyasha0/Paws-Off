@@ -1,0 +1,11 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v3.1.187496374)
+
+newmtl fire
+Kd 1.0 0.3 0.3
+Ka 1.0 0.5 0.3
+Ks 1.0 0.3 0.3
+Ke 1.0 0.3 0
+d 2
+illum 1
+Ns 100.0

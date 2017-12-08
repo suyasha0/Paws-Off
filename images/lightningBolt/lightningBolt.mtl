@@ -1,12 +1,10 @@
-# File produced by Open Asset Import Library (http://www.assimp.sf.net)
-# (assimp v3.1.187496374)
+# Blender MTL File: 'lightning.blend'
+# Material Count: 1
 
 newmtl lightningBolt
+Ka 0.63 0.63 0.63
 Kd 1.0 1.0 0.3
-Ka 0.8 0.8 0.3
 Ks 1.0 1.0 0.3
-Ke 0 0 0
+Ke 0.0 0.0 0.0
 d 1
-illum 1
-
-
+illum 2

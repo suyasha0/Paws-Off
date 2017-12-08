@@ -1,0 +1,12 @@
+# Blender MTL File: 'lightning.blend'
+# Material Count: 1
+
+newmtl lightningBolt.001
+Ns 96.078431
+Ka 0.633333 0.633333 0.633333
+Kd 1.000000 1.000000 0.300000
+Ks 1.000000 1.000000 0.300000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2

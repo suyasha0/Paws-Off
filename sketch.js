@@ -1,6 +1,4 @@
-
 var world, startPlane;
-
 // our Leap motion hand sensor controller object (instantiated inside of 'setup');
 var leapController;
 // our hand displays (simple shapes that will show up in front of the user)
@@ -8,13 +6,17 @@ var hand1, hand2;
 //global ground to move in draw
 var g;
 //lightning
-var lightningBolt;
+var lightningContainer; var fireContainer; 
+
+var zRot = true;
+var z =0;
+
+var lightningBolt; var fire;
 //pokeball array
 var pokeballs = [];
-
+var pokeball;
 // 0 : startscreen, 1 : play, -1 : endscreen
 var gameMode = 0;
-
 function setup() {
   // no canvas needed
   noCanvas();
@@ -27,8 +29,30 @@ function setup() {
   });
   // every time the Leap provides us with hand data we will ask it to run this function
   leapController.loop(handleHandData);
-
   // create a plane to serve as our "ground"
+  hand1 = new Box({
+    x: -0.5,
+    y: 0,
+    z: -1,
+    width: 0.1,
+    height: 0.1,
+    depth: 0.1,
+    red: 255,
+    green: 0,
+    blue: 0
+    });
+  
+    hand2 = new Box({
+    x: 0.5,
+    y: 0,
+    z: -1,
+    width: 0.1,
+    height: 0.1,
+    depth: 0.1,
+    red: 0,
+    green: 255,
+    blue: 0
+    });
   g = new Plane({
     x: 0,
     y: 0,
@@ -51,32 +75,8 @@ function setup() {
     width: 15,
     height: 15,
     asset: 'startscreen'
-  })
- // world.add(startPlane);
-
-  hand1 = new Box({
-	x: -0.5,
-	y: 0,
-	z: -1,
-	width: 0.1,
-	height: 0.1,
-	depth: 0.1,
-	red: 255,
-	green: 0,
-	blue: 0
   });
-
-  hand2 = new Box({
-	x: 0.5,
-	y: 0,
-	z: -1,
-	width: 0.1,
-	height: 0.1,
-	depth: 0.1,
-	red: 0,
-	green: 255,
-	blue: 0
-  });
+//  world.add(startPlane);
 
   pokeball = new OBJ({
 	asset: 'ball_obj',
@@ -90,33 +90,57 @@ function setup() {
 	scaleY:.3,
 	scaleZ:.3,
   });
-
   world.add(pokeball);
 
-  // for (var i = 0;i<100;i++){
+  lightningContainer = new Container3D({x:0,y:0,z:0});
   lightningBolt = new OBJ({
     asset: 'lightningBolt_obj',
     mtl: 'lightningBolt_mtl',
-    x: i0
-    y: 4,
+    x: 0,
+    y: 1,
     z: 0,
-    rotationX:-90,
+    rotationX:60,
     rotationY:0,
     scaleX:.05,
     scaleY:.05,
     scaleZ:.05,
   });
-  world.add(lightningBolt);
-  // }
+  lightningContainer.addChild(lightningBolt);
+  world.add(lightningContainer);
+
+  world.add(Fireball());
+
+  console.log("fire X", world);
+  //fire.setRotation(fire.getRotationX(),fire.getRotationY(), 10);
 
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
 
-
 }
-function draw() {
 
+function Fireball(){
+  fireContainer = new Container3D({x:0,y:0,z:0});
+  fire = new OBJ({
+    asset: 'fire_obj',
+    mtl: 'fire_mtl',
+    x: 0,
+    y: 2,
+    z: 0,
+    rotationX:120,
+    rotationY:0,
+    rotationZ:-5,
+    scaleX:.02,
+    scaleY:.02,
+    scaleZ:.02,
+  });
+  fireContainer.addChild(fire);
+  return fireContainer;
+}
+
+//world.add(fireContainer);
+
+function draw() {
   if(gameMode==0){
   	startScreen();
   }     
@@ -126,23 +150,52 @@ function draw() {
   else{
   	endScreen();
   }
-
-  var pos = world.getUserPosition();
+  //fire.spinY(1);
+  //fire.spinX(2);
+  // if (fire.getRotationZ() ==5){
+    // x = fire.getRotationX();
+    // y = fire.getRotationY();
+    // z+=1;
+    // fire.setRotation(x,y,z);
+  if (z>=5){
+    zRot = false;
+  }
+  if (z<=-5){
+    zRot = true;
+  }
+  if (zRot){
+    z+=1;
+  } else{
+    z-=1;
+  }
   
+   fire.rotateZ(z);
+  // console.log("fire rot X",fire.getRotationX());
+  // fire.setRotation(120, 0, 20);
+  console.log("FIRE", fire.getRotationX(), fire.getRotationY(), fire.getRotationZ());
+  // } else{
+  //   fire.setRotation(fire.getRotationX(),fire.getRotationY(), 5);
+  // }
+  // console.log("fire",fire.getRotationZ());
+  
+//  console.log("fire",fire);
+  //moving lightning away kinda
+  // lightningContainer.setZ(lightningContainer.getZ() - .05);
+  // lightningContainer.setY(lightningContainer.getY() + .02);
+  var pos = world.getUserPosition(); 
     // now evaluate
-    if (pos.x > 47) { //width of plane, looks good when comes to edge
-      world.setUserPosition(47, pos.y, pos.z);
-    } else if (pos.x < -47) {
-      world.setUserPosition(-47, pos.y, pos.z);
-    }
-    //have above just blcok u from going off side 
+  if (pos.x > 47) { //width of plane, looks good when comes to edge
+    world.setUserPosition(47, pos.y, pos.z);
+  } else if (pos.x < -47) {
+    world.setUserPosition(-47, pos.y, pos.z);
+  }
+  //have above just blcok u from going off side 
 
-    if (pos.z > 500) { //if it goes past the length
-      world.setUserPosition(pos.x, pos.y, -500);
-    } else if (pos.z < -500) {
-      world.setUserPosition(pos.x, pos.y, 500);
-    }
-
+  if (pos.z > 500) { //if it goes past the length
+    world.setUserPosition(pos.x, pos.y, -500);
+  } else if (pos.z < -500) {
+    world.setUserPosition(pos.x, pos.y, 500);
+  }
 }
 
 function startScreen(){
@@ -151,16 +204,13 @@ function startScreen(){
 }
 
 function play(){
-
 	//make ground move forward
     //g.setZ(g.getZ()+.05);       **commenting this because im getting dizzy testing.
-
     var create = random(100);
 	if(create<6){
 	 	var temp = new Pokeball(random(-10,10), 1, -5);
 	 	pokeballs.push( temp );
 	}
-
 	for (var i = 0; i < pokeballs.length; i++) {
 		var result = pokeballs[i].move();
 		if (result == "gone") {
@@ -168,9 +218,7 @@ function play(){
 			i-=1;
 		}
 	}
-
 	console.log(world.getUserPosition());
-
 }
 
 function endScreen(){

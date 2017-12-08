@@ -1,7 +1,7 @@
 # File produced by Open Asset Import Library (http://www.assimp.sf.net)
 # (assimp v3.1.187496374)
 
-mtllib 0a5826e11695475c9cc3285dcc64f9d4.obj.mtl
+mtllib lightningBolt.mtl
 
 # 119 vertex positions
 v  -8.62635 10.4531 2.47511
@@ -600,7 +600,7 @@ vn 0.999771 -0.00705304 -0.0132557
 
 # Mesh 'Box001_0' with 12 faces
 g Box001_0
-usemtl %%%DEFAULT
+usemtl lightningBolt
 f  1/1/1 2/2/2 3/3/1
 f  3/3/1 4/4/3 1/1/1
 f  5/4/4 6/1/5 7/2/4
@@ -616,7 +616,7 @@ f  5/2/16 8/3/18 2/4/16
 
 # Mesh 'Pyramid002_1' with 191 faces
 g Pyramid002_1
-usemtl %%%DEFAULT
+usemtl lightningBolt
 f  9/5/19 10/4/20 11/6/21
 f  9/5/19 12/7/22 13/8/23
 f  9/5/19 14/9/24 15/10/25
@@ -811,7 +811,7 @@ f  76/203/216 75/178/191 77/202/215
 
 # Mesh 'Pyramid001_2' with 18 faces
 g Pyramid001_2
-usemtl %%%DEFAULT
+usemtl lightningBolt
 f  109/5/217 110/204/217 111/205/217
 f  109/5/218 111/206/219 112/207/220
 f  109/5/218 112/207/220 113/1/221

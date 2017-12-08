@@ -139,7 +139,7 @@ function draw() {
   } else{
   	endScreen();
   }
-<<<<<<< HEAD
+
   //fire.spinY(1);
   //fire.spinX(2);
   // if (fire.getRotationZ() ==5){
@@ -156,7 +156,7 @@ function draw() {
   // console.log("fire",fire.getRotationZ());
   
 //  console.log("fire",fire);
-=======
+
   Ice.spinZ(1);
   if (z>=10){
     zRot = false;
@@ -172,7 +172,6 @@ function draw() {
   y+=1;
   fire.rotateZ(z);
   //lightningBolt.rotateY(y);
->>>>>>> 63eb07a22d287a9825b8ea67e5c9daf8b609adfe
   //moving lightning away kinda
   // lightningContainer.setZ(lightningContainer.getZ() - .05);
   // lightningContainer.setY(lightningContainer.getY() + .02);

@@ -100,11 +100,12 @@ function setup() {
     x: -1,
     y: 1,
     z: 0,
-    rotationX:60,
+    rotationX:-135,
     rotationY:0,
-    scaleX:.05,
-    scaleY:.05,
-    scaleZ:.05,
+    // rotationZ:10,
+    scaleX:1,
+    scaleY:1,
+    scaleZ:1,
   });
   lightningContainer.addChild(lightningBolt);
   world.add(lightningContainer);
@@ -141,7 +142,7 @@ function draw() {
   }
 
   //fire.spinY(1);
-  //fire.spinX(2);
+  lightningBolt.spinZ(1);
   // if (fire.getRotationZ() ==5){
     // x = fire.getRotationX();
     // y = fire.getRotationY();
@@ -344,9 +345,9 @@ function Fireball(){
     rotationX:120,
     rotationY:0,
     rotationZ:-5,
-    scaleX:.02,
-    scaleY:.02,
-    scaleZ:.02,
+    scaleX:5.,
+    scaleY:5.,
+    scaleZ:5.,
   });
   fireContainer.addChild(fire);
   return fireContainer;

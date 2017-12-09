@@ -6,12 +6,15 @@ var hand1, hand2;
 //global ground to move in draw
 var g;
 //lightning
-var lightningContainer; var fireContainer; 
+var lightningContainer; var fireContainer; var iceContainer;
+var lightnings =[];
+var fires =[];
+var ices = [];
 
 var zRot = true;
 var z =0;var y=0;
 
-var lightningBolt; var fire;
+var lightningBolt; var fire; var ice;
 //pokeball array
 var pokeballs = [];
 var pokeball;
@@ -77,61 +80,17 @@ function setup() {
     height: 15,
     asset: 'startscreen'
   });
- world.add(startPlane);
+  world.add(startPlane);
 
-  pokeball = new OBJ({
-    asset: 'ball_obj',
-    mtl: 'ball_mtl',
-    x: 5,
-    y: 1.3,
-    z: 0,
-    rotationX:0,
-    rotationY:180,
-    scaleX:.3,
-    scaleY:.3,
-    scaleZ:.3,
-  });
-  world.add(pokeball);
-
-  lightningContainer = new Container3D({x:0,y:0,z:0});
-  lightningBolt = new OBJ({
-    asset: 'lightningBolt_obj',
-    mtl: 'lightningBolt_mtl',
-    x: -1,
-    y: 1,
-    z: 0,
-    rotationX:-135,
-    rotationY:0,
-    // rotationZ:10,
-    scaleX:1,
-    scaleY:1,
-    scaleZ:1,
-  });
-  lightningContainer.addChild(lightningBolt);
-  world.add(lightningContainer);
-
-  Ice = new OBJ({
-    asset: 'ice_obj',
-    mtl: 'ice_mtl',
-    x: 0,
-    y: .5,
-    z: 0,
-    rotationX:-135,
-    rotationY:0,
-    scaleX:.05,
-    scaleY:.05,
-    scaleZ:.05,
-  });
-  world.add(Ice);
-
+  world.add(LightningBolt());
+  world.add(Ice());
   world.add(Fireball());
 
-  var ball = new Pokeball(1,2,0);
+ // var ball = new Pokeball(1,2,0);
 
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
-
 }
 
 function draw() {
@@ -142,18 +101,14 @@ function draw() {
   } else{
   	endScreen();
   }
-
   //fire.spinY(1);
   lightningBolt.spinZ(2);
-
-  Ice.spinZ(1);
+  ice.spinZ(1);
   if (z>=10){
     zRot = false;
-  }
-  if (z<=-10){
+  } if (z<=-10){
     zRot = true;
-  }
-  if (zRot){
+  } if (zRot){
     z+=2;
   } else{
     z-=2;
@@ -162,8 +117,8 @@ function draw() {
   fire.rotateZ(z);
   //lightningBolt.rotateY(y);
   //moving lightning away kinda
-  // lightningContainer.setZ(lightningContainer.getZ() - .05);
-  // lightningContainer.setY(lightningContainer.getY() + .02);
+  // fireContainer.setZ(fireContainer.getZ() - .1);
+  // fireContainer.setY(fireContainer.getY() + .04);
   var pos = world.getUserPosition(); 
     // now evaluate
   if (pos.x > 47) { //width of plane, looks good when comes to edge
@@ -316,7 +271,6 @@ function handleHandData(frame) {
         return "gone";
       }
     }
-
   }
 
 function Fireball(){
@@ -336,4 +290,41 @@ function Fireball(){
   });
   fireContainer.addChild(fire);
   return fireContainer;
+}
+
+function Ice(){
+  iceContainer = new Container3D({x:0,y:0,z:0});
+  ice = new OBJ({
+    asset: 'ice_obj',
+    mtl: 'ice_mtl',
+    x: 0,
+    y: 1,
+    z: 0,
+    rotationX:-135,
+    rotationY:0,
+    scaleX:.4,
+    scaleY:.4,
+    scaleZ:.4,
+  });
+  iceContainer.addChild(ice);
+  return iceContainer;
+}
+
+function LightningBolt(){
+  lightningContainer = new Container3D({x:0,y:0,z:0});
+  lightningBolt = new OBJ({
+    asset: 'lightningBolt_obj',
+    mtl: 'lightningBolt_mtl',
+    x: -1,
+    y: 1,
+    z: 0,
+    rotationX:-135,
+    rotationY:0,
+    // rotationZ:10,
+    scaleX:1,
+    scaleY:1,
+    scaleZ:1,
+  });
+  lightningContainer.addChild(lightningBolt);
+  return lightningContainer;
 }

@@ -13,6 +13,7 @@ var ices = [];
 
 var zRot = true;
 var z =0;var y=0;
+var fx =0; var fy =0; var fz =0;
 
 var lightningBolt; var fire; var ice;
 //pokeball array
@@ -84,7 +85,7 @@ function setup() {
 
   world.add(LightningBolt());
   world.add(Ice());
-  world.add(Fireball());
+//  world.add(Fireball(0,2,0));
 
  // var ball = new Pokeball(1,2,0);
 
@@ -104,17 +105,13 @@ function draw() {
   //fire.spinY(1);
   lightningBolt.spinZ(2);
   ice.spinZ(1);
-  if (z>=10){
-    zRot = false;
-  } if (z<=-10){
-    zRot = true;
-  } if (zRot){
-    z+=2;
-  } else{
-    z-=2;
-  }
+  if (z>=10){ zRot = false;}
+  if (z<=-10){ zRot = true;}
+  if (zRot){ z+=2;}
+  else{ z-=2;}
   y+=1;
-  fire.rotateZ(z);
+ 
+ // fire.rotateZ(z);
   //lightningBolt.rotateY(y);
   //moving lightning away kinda
   // fireContainer.setZ(fireContainer.getZ() - .1);
@@ -154,7 +151,7 @@ function play(){
 			i-=1;
 		}
 	}
-	console.log(world.getUserPosition());
+	//console.log(world.getUserPosition());
 
 	if (z>=5){
 		zRot = false;
@@ -166,8 +163,16 @@ function play(){
 		z+=1;
 	} else{
 		z-=1;
-	}
-  fire.rotateZ(z);
+  }
+  // for (var i =0; i<fires.length;i++){
+  //   fires[i].setZ(fires[i].getZ() - .1);
+  //   fires[i].setY(fires[i].getY() + .04);
+  //   var fireArr = fires[i].getChildren();
+  //   for (var j=0;j<fireArr.length; j++){
+  //     fireArr[j].rotateZ(z);
+  //   }
+  // }
+// fire.rotateZ(z);
 }
 
 function endScreen(){
@@ -204,7 +209,7 @@ function handleHandData(frame) {
         hy2 = handPosition1[1];
         hz2 = handPosition1[2];
       }
-      console.log(hx1 + "," + hy1 + " - " + hx2 + ", " + hy2);
+     // console.log(hx1 + "," + hy1 + " - " + hx2 + ", " + hy2);
   
       // x is left-right, y is up-down, z is forward-back
       // for this example we will use x & y to move the circle around the screen
@@ -225,17 +230,17 @@ function handleHandData(frame) {
       hand2.setX( x2 );
       hand2.setY( y2 );
   
-      if (y1 < y2) {
-        var diff = y2 - y1;
-        //world.camera.nudgePosition( map(diff, 0, 1, 0, -0.1), 0, 0);
-      }
-      else {
-        var diff = y1 - y2;
-        //world.camera.nudgePosition( map(diff, 0, 1, 0, 0.1), 0, 0);
-      }
+      // if (y1 < y2) {
+      //   var diff = y2 - y1;
+      //   //world.camera.nudgePosition( map(diff, 0, 1, 0, -0.1), 0, 0);
+      // }
+      // else {
+      //   var diff = y1 - y2;
+      //   //world.camera.nudgePosition( map(diff, 0, 1, 0, 0.1), 0, 0);
+      // }
     }
 
-    if(frame.valid && frame.gestures.length > 0 && gameMode==0){
+    if(gameMode==0 && frame.valid && frame.gestures.length > 0 ){
       frame.gestures.forEach(function(gesture){
         switch (gesture.type){
           case "swipe":
@@ -244,7 +249,31 @@ function handleHandData(frame) {
 			      hand2.show();
             gameMode=1;
             break;
+          // case "screenTap":
+          //   var pointableIds = gesture.pointableIds;
+          //   console.log("SCREENTAP",pointableIds);
+          //   break;
         }
+      });
+    }
+    if(gameMode==1 && frame.valid && frame.gestures.length > 0 ){
+      frame.gestures.forEach(function(gesture){
+        switch (gesture.type){
+          // case "swipe":
+         	//   world.remove(startPlane);
+         	//   hand1.show();
+			    //   hand2.show();
+          //   gameMode=1;
+          //   break;
+          case "screenTap":
+            var pointableIds = gesture.pointableIds;
+            console.log("SCREENTAP",pointableIds);
+            // fires.push(Fireball(fx,fy,fz));
+            // console.log("PUSHED:", fires)
+
+            break;
+        }
+        // console.log("HELLO");
       });
     }
   }
@@ -281,14 +310,14 @@ function handleHandData(frame) {
     }
   }
 
-function Fireball(){
+function Fireball(x,y,z){
   fireContainer = new Container3D({x:0,y:0,z:0});
   fire = new OBJ({
     asset: 'fire_obj',
     mtl: 'fire_mtl',
-    x: 1,
-    y: 2,
-    z: 0,
+    x: x,
+    y: y,
+    z: z,
     rotationX:120,
     rotationY:0,
     rotationZ:-5,

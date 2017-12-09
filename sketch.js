@@ -126,6 +126,8 @@ function setup() {
 
   world.add(Fireball());
 
+  var ball = new Pokeball(1,2,0);
+
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
@@ -142,21 +144,7 @@ function draw() {
   }
 
   //fire.spinY(1);
-  lightningBolt.spinZ(1);
-  // if (fire.getRotationZ() ==5){
-    // x = fire.getRotationX();
-    // y = fire.getRotationY();
-    // z+=1;
-    // fire.setRotation(x,y,z);
-  // console.log("fire rot X",fire.getRotationX());
-  // fire.setRotation(120, 0, 20);
-  //console.log("FIRE", fire.getRotationX(), fire.getRotationY(), fire.getRotationZ());
-  // } else{
-  //   fire.setRotation(fire.getRotationX(),fire.getRotationY(), 5);
-  // }
-  // console.log("fire",fire.getRotationZ());
-  
-//  console.log("fire",fire);
+  lightningBolt.spinZ(2);
 
   Ice.spinZ(1);
   if (z>=10){
@@ -224,8 +212,7 @@ function play(){
 	} else{
 	z-=1;
 	}
-  
-    fire.rotateZ(z);
+  fire.rotateZ(z);
 }
 
 function endScreen(){
@@ -297,13 +284,11 @@ function handleHandData(frame) {
       frame.gestures.forEach(function(gesture){
         switch (gesture.type){
           case "swipe":
-
          	  world.remove(startPlane);
          	  hand1.show();
-			  hand2.show();
-
-              gameMode=1;
-              break;
+			      hand2.show();
+            gameMode=1;
+            break;
         }
       });
     }
@@ -316,9 +301,9 @@ function handleHandData(frame) {
       x:x, y:y, z:z,
       rotationX:0,
       rotationY:90,
-      scaleX:.3,
-      scaleY:.3,
-      scaleZ:.3,
+      scaleX:1.,
+      scaleY:1.,
+      scaleZ:1.,
     });
 
     world.add(this.pokeball);

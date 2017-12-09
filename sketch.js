@@ -188,8 +188,8 @@ function play(){
 	//make ground move forward
     //g.setZ(g.getZ()+.05);       **commenting this because im getting dizzy testing.
     var create = random(100);
-	if(create<6){
-	 	var temp = new Pokeball(random(-10,10), 1, -5);
+	if(create<2){
+	 	var temp = new Pokeball(random(-5, 5), 1, 2);
 	 	pokeballs.push( temp );
 	}
 	for (var i = 0; i < pokeballs.length; i++) {
@@ -202,15 +202,15 @@ function play(){
 	console.log(world.getUserPosition());
 
 	if (z>=5){
-	zRot = false;
+		zRot = false;
 	}
 	if (z<=-5){
-	zRot = true;
+		zRot = true;
 	}
 	if (zRot){
-	z+=1;
+		z+=1;
 	} else{
-	z-=1;
+		z-=1;
 	}
   fire.rotateZ(z);
 }
@@ -272,11 +272,11 @@ function handleHandData(frame) {
   
       if (y1 < y2) {
         var diff = y2 - y1;
-        world.camera.nudgePosition( map(diff, 0, 1, 0, -0.1), 0, 0);
+        //world.camera.nudgePosition( map(diff, 0, 1, 0, -0.1), 0, 0);
       }
       else {
         var diff = y1 - y2;
-        world.camera.nudgePosition( map(diff, 0, 1, 0, 0.1), 0, 0);
+        //world.camera.nudgePosition( map(diff, 0, 1, 0, 0.1), 0, 0);
       }
     }
 
@@ -301,20 +301,28 @@ function handleHandData(frame) {
       x:x, y:y, z:z,
       rotationX:0,
       rotationY:90,
-      scaleX:1.,
-      scaleY:1.,
-      scaleZ:1.,
+      scaleX:.8,
+      scaleY:.8,
+      scaleZ:.8,
     });
 
     world.add(this.pokeball);
 
 	this.move = function(){
-		this.pokeball.nudge(0, 0, .2);
+		this.pokeball.nudge(0, 0, .1);
 
-      if(y<0){
-        world.remove(this.pokeball);
-        return "gone";
-      }
+		if(this.pokeball.x< -.1){
+			this.pokeball.nudge(.5, 0, 0);
+		}
+		else if(this.pokeball.x>.1){
+			this.pokeball.nudge(-.5, 0, 0);
+		}
+
+		if(this.pokeball.z>5){
+			world.remove(this.pokeball);
+			return "gone";
+		}
+
     }
 
   }

@@ -7,10 +7,14 @@ var hand1, hand2;
 var g;
 //lightning
 var lightningContainer, fireContainer; 
+var lightnings =[];
+var fires =[];
+var ices = [];
 var framectr =0;
 var zRot = true;
 var z =0;var y=0;
-var fx =0; var fy =0; var fz =0;
+var fx =1; var fy =0; var fz =0;
+var startSwipe = false;
 
 var lightningBolt, fire;
 //pokeball array
@@ -83,7 +87,15 @@ function setup() {
 
   world.add(LightningBolt());
   world.add(Ice());
-  world.add(Fireball());
+  //world.add(Fireball());
+  // console.log(world);
+  // console.log(world.scene);
+  // console.log(world.scene.childNodes);
+  // console.log("TYPE OF",typeof(world.scene.childNodes));
+  // console.log(world.scene.childNodes["13"]);
+  // console.log("TYPE OF",typeof(world.scene.childNodes[13]));
+  // console.log(world.scene.childNodes[10]);
+  // world.scene.childNodes.splice(10,1);
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
@@ -92,9 +104,13 @@ function setup() {
 }
 
 function draw() {
+  if (startSwipe){
+    world.remove(startPlane);
+    startSwipe = false; //fix the remove startplane thing being in a loop error
+  }
   if(gameMode==0){
   	startScreen();
-  } else if(gameMode==1){
+  } else if(gameMode==1){    
   	play();
   } else{
   	endScreen();
@@ -156,14 +172,18 @@ function play(){
 	if (z>=5){zRot = false;}
 	if (z<=-5){zRot = true;}
 	if (zRot){ z+=1;} else{ z-=1;}
-  // for (var i =0; i<fires.length;i++){
-  //   fires[i].setZ(fires[i].getZ() - .1);
-  //   fires[i].setY(fires[i].getY() + .04);
-  //   var fireArr = fires[i].getChildren();
-  //   for (var j=0;j<fireArr.length; j++){
-  //     fireArr[j].rotateZ(z);
-  //   }
-  // }
+  for (var i =0; i<fires.length;i++){
+    fires[i].fireContainer.setZ(fires[i].fireContainer.getZ() - .1);
+    fires[i].fireContainer.setY(fires[i].fireContainer.getY() + .04);
+    var fireArr = fires[i].fireContainer.getChildren();
+    for (var j=0;j<fireArr.length; j++){
+      fireArr[j].rotateZ(z);
+    }
+    if (fires[i].fireContainer.getY() >5){
+      fires[i].delete();
+      fires.splice(i,1);
+    }
+  }
 // fire.rotateZ(z);
 }
 
@@ -191,9 +211,7 @@ function handleHandData(frame) {
     hx2 = handPosition2[0];
     hy2 = handPosition2[1];
     //hz2 = handPosition2[2];
-
     // swap them so that handPosition1 is the hand on the left
-    
     if (hx1 > hx2) {
       hx1 = handPosition2[0];
       hy1 = handPosition2[1];
@@ -228,22 +246,14 @@ function handleHandData(frame) {
     hand2.setX( x2 );
     hand2.setY( y2 );
     //hand1.setY( z2 );
-
-    // if (y1 < y2) {
-    //   var diff = y2 - y1;
-    //   //world.camera.nudgePosition( map(diff, 0, 1, 0, -0.1), 0, 0);
-    // }
-    // else {
-    //   var diff = y1 - y2;
-    //   //world.camera.nudgePosition( map(diff, 0, 1, 0, 0.1), 0, 0);
-    // }
   }
 
   if(gameMode==0 && frame.valid && frame.gestures.length > 0 ){
     frame.gestures.forEach(function(gesture){
       switch (gesture.type){
         case "swipe":
-          world.remove(startPlane);
+          startSwipe = true;
+          // world.remove(startPlane);
           hand1.show();
           hand2.show();
           gameMode=1;
@@ -267,15 +277,14 @@ function handleHandData(frame) {
         case "screenTap":
           var pointableIds = gesture.pointableIds;
           console.log("SCREENTAP",pointableIds);
-          // fires.push(Fireball(fx,fy,fz));
-          // console.log("PUSHED:", fires)
-
+          fires.push(new Fireball(fx,fy,fz)); 
+          fy+=0.5;
+          // console.log("PUSHED:", fires); //so i think it added fireballs?
           break;
       }
       // console.log("HELLO");
     });
   }
-  
 }
   
 function Pokeball(x,y,z) {
@@ -295,7 +304,8 @@ function Pokeball(x,y,z) {
   world.add(this.pokeball);
 
 	this.move = function(){
-		this.pokeball.nudge(0, 0, .03);
+    this.pokeball.nudge(0, 0, .03);
+    //WE CAN DO WAY MORE MATH TO MAKE IT LOOK BETTER IN TERMS OF HITTING U
 
 		if(this.bool && this.pokeball.x< -.1){
       this.x =.03;
@@ -314,7 +324,6 @@ function Pokeball(x,y,z) {
     //   }
     //   this.pokeball.nudge(xMovement, 0, 0);
     // }
-
 		if(this.pokeball.z>5){
 			world.remove(this.pokeball);
 			return "gone";
@@ -329,8 +338,8 @@ function Pokeball(x,y,z) {
 }
 
 function Fireball(x,y,z){
-  fireContainer = new Container3D({x:0,y:0,z:0});
-  fire = new OBJ({
+  this.fireContainer = new Container3D({x:0,y:0,z:0});
+  this.fire = new OBJ({
     asset: 'fire_obj',
     mtl: 'fire_mtl',
     x: x,
@@ -343,8 +352,15 @@ function Fireball(x,y,z){
     scaleY:5.,
     scaleZ:5.,
   });
-  fireContainer.addChild(fire);
-  return fireContainer;
+  this.fireContainer.addChild(this.fire);
+  world.add(this.fireContainer);
+  // world.remove(this.fireContainer);
+  // console.log("MADE AND GONE");
+  this.delete = function(){
+    world.remove(this.fireContainer);
+  }
+
+  // return this.fireContainer;
 }
 
 function LightningBolt(){

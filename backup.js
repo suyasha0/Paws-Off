@@ -5,8 +5,6 @@ var leapController;
 var hand1, hand2;
 var x1; var y1; var x2; var y2;
 
-var health = 5;
-
 //global ground to move in draw
 var g;
 //lightning
@@ -91,23 +89,18 @@ function setup() {
     asset: 'startscreen'
   });
   world.add(startPlane);
-  pokeballs.push(new Pokeball(0.15, .95, 4.9)); // basically close enough to hit user 
-  pokeballs.push(new Pokeball(0.15, .95, 4.7));
-  // var temp = new Pokeball(-.15, .95, 4.9); // basically close enough to hit user 
-  // console.log("WORLD",world.getUserPosition().x);
-  // console.log(temp);
-  // console.log("WORDL2", temp.pokeball.x);
-  // console.log("WORLD",world.getUserPosition().y);
-  // console.log("WORDL2", temp.pokeball.y);
-  //  console.log("DISTANCE",dist(temp.pokeball.x,temp.pokeball.y,temp.pokeball.z, world.getUserPosition().x,world.getUserPosition().y, world.getUserPosition().z));
-  // if(dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y)<.2){
-  //   // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
-  // }
-  
+
   // lightnings.push(new LightningBolt());
   // ices.push(new Ice());
   //world.add(Fireball());
- 
+  // console.log(world);
+  // console.log(world.scene);
+  // console.log(world.scene.childNodes);
+  // console.log("TYPE OF",typeof(world.scene.childNodes));
+  // console.log(world.scene.childNodes["13"]);
+  // console.log("TYPE OF",typeof(world.scene.childNodes[13]));
+  // console.log(world.scene.childNodes[10]);
+  // world.scene.childNodes.splice(10,1);
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
@@ -121,13 +114,18 @@ function draw() {
     startSwipe = false; //fix the remove startplane thing being in a loop error
   }
   if(gameMode==0){
-    startScreen();
-    // play();// TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+  	startScreen();
   } else if(gameMode==1){    
   	play();
   } else{
   	endScreen();
   }
+
+  //fire.spinY(1);
+
+  // ice.spinZ(1);
+
+
   if (z>=10){ zRot = false;}
   if (z<=-10){ zRot = true;}
   if (zRot){ z+=2;}
@@ -140,19 +138,19 @@ function draw() {
   //moving lightning away kinda
   // lightningContainer.setZ(lightningContainer.getZ() - .05);
   // lightningContainer.setY(lightningContainer.getY() + .02);
-  // var pos = world.getUserPosition(); 
-  //   // now evaluate
-  // if (pos.x > 47) { //width of plane, looks good when comes to edge
-  //   world.setUserPosition(47, pos.y, pos.z);
-  // } else if (pos.x < -47) {
-  //   world.setUserPosition(-47, pos.y, pos.z);
-  // }
-  // //have above just blcok u from going off side 
-  // if (pos.z > 500) { //if it goes past the length
-  //   world.setUserPosition(pos.x, pos.y, -500);
-  // } else if (pos.z < -500) {
-  //   world.setUserPosition(pos.x, pos.y, 500);
-  // }
+  var pos = world.getUserPosition(); 
+    // now evaluate
+  if (pos.x > 47) { //width of plane, looks good when comes to edge
+    world.setUserPosition(47, pos.y, pos.z);
+  } else if (pos.x < -47) {
+    world.setUserPosition(-47, pos.y, pos.z);
+  }
+  //have above just blcok u from going off side 
+  if (pos.z > 500) { //if it goes past the length
+    world.setUserPosition(pos.x, pos.y, -500);
+  } else if (pos.z < -500) {
+    world.setUserPosition(pos.x, pos.y, 500);
+  }
 }
 
 function startScreen(){
@@ -171,19 +169,10 @@ function play(){
 
 	for (var i = 0; i < pokeballs.length; i++) {
 		var result = pokeballs[i].move();
-    // console.log("DISTANCE",dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, world.getUserPosition().x, world.getUserPosition().y, world.getUserPosition().z));
-    if(dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, world.getUserPosition().x, world.getUserPosition().y, world.getUserPosition().z)<.18){
-      //distance for pokeball close enough to user
-      pokeballs[i].delete();
-      pokeballs.splice(i, 1);
-      health -=1;
-      console.log("DELETED", health);
-      // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
-    }
-    else if (result == "gone") {
+		if (result == "gone") {
 			pokeballs.splice(i, 1);
 			i-=1;
-    } 
+		}
 	}
 	//console.log(world.getUserPosition());
 	if (z>=5){zRot = false;}
@@ -225,6 +214,15 @@ function play(){
       lightnings.splice(i,1);
     }
   }
+  // for (var i=0; i < lightnings.length; i++){
+  //   lightnings[i].lightningBolt.spinZ(20);
+  // }
+  // // lightningBolt.spinZ(2);
+
+  // for (var i=0; i < ices.length; i++){
+  //   ices[i].ice.spinZ(10);
+  // }
+// fire.rotateZ(z);
 }
 
 function endScreen(){
@@ -383,9 +381,7 @@ function Pokeball(x,y,z) {
   this.bool = true;
   this.x = 0;
   world.add(this.pokeball);
-  this.delete = function(){
-    world.remove(this.pokeball);
-  }
+
 	this.move = function(){
     this.pokeball.nudge(0, 0, .03);
     //WE CAN DO WAY MORE MATH TO MAKE IT LOOK BETTER IN TERMS OF HITTING U

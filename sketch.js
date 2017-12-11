@@ -3,6 +3,8 @@ var world, startPlane;
 var leapController;
 // our hand displays (simple shapes that will show up in front of the user)
 var hand1, hand2;
+var x1; var y1; var x2; var y2;
+
 //global ground to move in draw
 var g;
 //lightning
@@ -13,8 +15,11 @@ var ices = [];
 var framectr =0;
 var zRot = true;
 var z =0;var y=0;
-var fx =1; var fy =0; var fz =0;
+var fx =1; var fy =0.5; var fz =2;
+var lx =0; var ly =0.5; var lz =2;
+var ix =-1; var iy =0.5; var iz =2;
 var startSwipe = false;
+var projectile =0;
 
 var lightningBolt, fire;
 //pokeball array
@@ -85,8 +90,8 @@ function setup() {
   });
   world.add(startPlane);
 
-  world.add(LightningBolt());
-  world.add(Ice());
+  // lightnings.push(new LightningBolt());
+  // ices.push(new Ice());
   //world.add(Fireball());
   // console.log(world);
   // console.log(world.scene);
@@ -117,9 +122,10 @@ function draw() {
   }
 
   //fire.spinY(1);
-  lightningBolt.spinZ(2);
 
-  ice.spinZ(1);
+  // ice.spinZ(1);
+
+
   if (z>=10){ zRot = false;}
   if (z<=-10){ zRot = true;}
   if (zRot){ z+=2;}
@@ -153,8 +159,8 @@ function startScreen(){
 }
 
 function play(){
-	//make ground move forward
-    //g.setZ(g.getZ()+.05);       **commenting this because im getting dizzy testing.
+	//make ground move forward **commenting this because im getting dizzy testing.
+    // g.setZ(g.getZ()+.05);      
   framectr+=1;
   if (framectr%30 ==0){
     var temp = new Pokeball(random(-4, 4), .95, 2);
@@ -184,6 +190,38 @@ function play(){
       fires.splice(i,1);
     }
   }
+  for (var i =0; i<ices.length;i++){
+    ices[i].iceContainer.setZ(ices[i].iceContainer.getZ() - .1);
+    ices[i].iceContainer.setY(ices[i].iceContainer.getY() + .04);
+    var iceArr = ices[i].iceContainer.getChildren();
+    for (var j=0;j<iceArr.length; j++){
+      iceArr[j].spinZ(2);
+    }
+    if (ices[i].iceContainer.getY() >5){
+      ices[i].delete();
+      ices.splice(i,1);
+    }
+  }
+  for (var i =0; i<lightnings.length;i++){
+    lightnings[i].lightningContainer.setZ(lightnings[i].lightningContainer.getZ() - .1);
+    lightnings[i].lightningContainer.setY(lightnings[i].lightningContainer.getY() + .04);
+    var lightningArr = lightnings[i].lightningContainer.getChildren();
+    for (var j=0;j<lightningArr.length; j++){
+      lightningArr[j].spinZ(4);
+    }
+    if (lightnings[i].lightningContainer.getY() >5){
+      lightnings[i].delete();
+      lightnings.splice(i,1);
+    }
+  }
+  // for (var i=0; i < lightnings.length; i++){
+  //   lightnings[i].lightningBolt.spinZ(20);
+  // }
+  // // lightningBolt.spinZ(2);
+
+  // for (var i=0; i < ices.length; i++){
+  //   ices[i].ice.spinZ(10);
+  // }
 // fire.rotateZ(z);
 }
 
@@ -228,12 +266,12 @@ function handleHandData(frame) {
     // let's map the x & y values to screen coordinates
     // note that determining the correct values for your application takes some trial and error!
 
-  var x1 = map(hx1, -200, 200, -1, 0);
-  var y1 = map(hy1, 0, 500, -1, 2);
+  x1 = map(hx1, -200, 200, -1, 0);
+  y1 = map(hy1, 0, 500, -1, 2);
   //var z1 = map(hz1, -200, 200, -1, 2);
 
-  var x2 = map(hx2, -200, 200, 0, 1);
-  var y2 = map(hy2, 0, 500, -1, 2);
+  x2 = map(hx2, -200, 200, 0, 1);
+  y2 = map(hy2, 0, 500, -1, 2);
   //var z2 = map(hz1, -200, 200, -1, 2);
 
     // OK, now we have two hands ... let's use this information to draw a visual representation
@@ -276,9 +314,21 @@ function handleHandData(frame) {
         //   break;
         case "screenTap":
           var pointableIds = gesture.pointableIds;
-          console.log("SCREENTAP",pointableIds);
-          fires.push(new Fireball(fx,fy,fz)); 
-          fy+=0.5;
+          
+          if (projectile%3==0){
+            fires.push(new Fireball(x2+.5,.95,fz));
+             
+            fy+=0.5;
+            projectile+=1;
+          } else if (projectile%3==1){
+            lightnings.push(new LightningBolt(x2+.5,.95,lz));
+            projectile+=1;
+          } else{
+            ices.push(new Ice(x2+.5,.95,iz));
+            projectile+=1;
+          }
+          console.log("SCREENTAP",x2,y2);
+         
           // console.log("PUSHED:", fires); //so i think it added fireballs?
           break;
       }
@@ -363,14 +413,14 @@ function Fireball(x,y,z){
   // return this.fireContainer;
 }
 
-function LightningBolt(){
-  lightningContainer = new Container3D({x:0,y:0,z:0});
-  lightningBolt = new OBJ({
+function LightningBolt(x,y,z){
+  this.lightningContainer = new Container3D({x:0,y:0,z:0});
+  this.lightningBolt = new OBJ({
     asset: 'lightningBolt_obj',
     mtl: 'lightningBolt_mtl',
-    x: -1,
-    y: 1,
-    z: 0,
+    x: x,
+    y: y,
+    z: z,
     rotationX:-135,
     rotationY:0,
     // rotationZ:10,
@@ -378,24 +428,32 @@ function LightningBolt(){
     scaleY:1,
     scaleZ:1,
   });
-  lightningContainer.addChild(lightningBolt);
-  return lightningContainer;
+  this.lightningContainer.addChild(this.lightningBolt);
+  world.add(this.lightningContainer);
+
+  this.delete = function(){
+    world.remove(this.lightningContainer);
+  }
 }
 
-function Ice(){
-  iceContainer = new Container3D({x:0,y:0,z:0});
-  ice = new OBJ({
+function Ice(x,y,z){
+  this.iceContainer = new Container3D({x:0,y:0,z:0});
+  this.ice = new OBJ({
     asset: 'ice_obj',
     mtl: 'ice_mtl',
-    x: 0,
-    y: 1,
-    z: 0,
+    x: x,
+    y: y,
+    z: z,
     rotationX:-135,
     rotationY:0,
     scaleX:.4,
     scaleY:.4,
     scaleZ:.4,
   });
-  iceContainer.addChild(ice);
-  return iceContainer;
+  this.iceContainer.addChild(this.ice);
+  world.add(this.iceContainer);
+
+  this.delete = function(){
+    world.remove(this.iceContainer);
+  }
 }

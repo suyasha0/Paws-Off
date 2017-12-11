@@ -7,7 +7,7 @@ var hand1, hand2;
 var g;
 //lightning
 var lightningContainer, fireContainer; 
-
+var framectr =0;
 var zRot = true;
 var z =0;var y=0;
 var fx =0; var fy =0; var fz =0;
@@ -21,6 +21,7 @@ var gameMode = 0;
 function setup() {
   // no canvas needed
   noCanvas();
+  noiseDetail(24);
   // construct the A-Frame world
   // this function requires a reference to the ID of the 'a-scene' tag in our HTML document
   world = new World('VRScene');
@@ -87,6 +88,7 @@ function setup() {
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
   // world.setUserPosition(0, 10, 5); //TESTING PURPOSES
+  //HEREEEEEEEEEEEEEEEEEEEEEE
 }
 
 function draw() {
@@ -137,9 +139,11 @@ function startScreen(){
 function play(){
 	//make ground move forward
     //g.setZ(g.getZ()+.05);       **commenting this because im getting dizzy testing.
-
-	var temp = new Pokeball(random(-5, 5), .95, 2);
-	pokeballs.push(temp);
+  framectr+=1;
+  if (framectr%30 ==0){
+    var temp = new Pokeball(random(-4, 4), .95, 2);
+    pokeballs.push(temp);
+  }
 
 	for (var i = 0; i < pokeballs.length; i++) {
 		var result = pokeballs[i].move();
@@ -285,18 +289,31 @@ function Pokeball(x,y,z) {
     scaleY:.3,
     scaleZ:.3,
   });
-
+  this.xNoiseOffset = random(0,1000);
+  this.bool = true;
+  this.x = 0;
   world.add(this.pokeball);
 
 	this.move = function(){
-		this.pokeball.nudge(0, 0, .1);
+		this.pokeball.nudge(0, 0, .03);
 
-		if(this.pokeball.x< -.1){
-			this.pokeball.nudge(.1, 0, 0);
+		if(this.bool && this.pokeball.x< -.1){
+      this.x =.03;
+      this.bool = false;
 		}
-		else if(this.pokeball.x>.1){
-			this.pokeball.nudge(-.1, 0, 0);
-		}
+		else if(this.bool && this.pokeball.x>.1){
+      this.x=-.03;
+      this.bool = false;
+    }
+    this.pokeball.nudge(this.x, 0, 0);
+    // else{
+    //   if (this.direction=="r"){
+    //     var xMovement = map( noise(this.xNoiseOffset), 0, 1, -.03, 0 );
+    //   }else{
+    //     var xMovement = map( noise(this.xNoiseOffset), 0, 1, 0, 0.3 );
+    //   }
+    //   this.pokeball.nudge(xMovement, 0, 0);
+    // }
 
 		if(this.pokeball.z>5){
 			world.remove(this.pokeball);

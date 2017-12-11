@@ -268,11 +268,11 @@ function handleHandData(frame) {
     // let's map the x & y values to screen coordinates
     // note that determining the correct values for your application takes some trial and error!
 
-  x1 = map(hx1, -200, 200, -1, 0);
+  x1 = map(hx1, -200, 200, -1, 0.5);
   y1 = map(hy1, 0, 500, -1, 2);
   //var z1 = map(hz1, -200, 200, -1, 2);
 
-  x2 = map(hx2, -200, 200, 0, 1);
+  x2 = map(hx2, -200, 200, -0.5, 1);
   y2 = map(hy2, 0, 500, -1, 2);
   //var z2 = map(hz1, -200, 200, -1, 2);
 
@@ -316,25 +316,19 @@ function handleHandData(frame) {
         //   break;
         case "screenTap":
           // var pointableIds = gesture.pointableIds;
-
-          // console.log("SCREENTAP",x2,y2);
-          // if (projectile%3==0){
-          //   fires.push(new Fireball(x2+.5,.95,fz));            
-          //   fy+=0.5;
-          //   projectile+=1;
-          // } else if (projectile%3==1){
-          //   lightnings.push(new LightningBolt(x2+.5,.95,lz));
-          //   projectile+=1;
-          // } else{
-          //   ices.push(new Ice(x2+.5,.95,iz));
-          //   projectile+=1;
-          // }
           var handIds = gesture.handIds;
           var hand;
           handIds.forEach(function(handId){
             hand = frame.hand(handId);
           });
-          if (hand.stabilizedPalmPosition[0] == frame.hands[1].stabilizedPalmPosition[0]){ //left
+          var leftHandX = frame.hands[1].stabilizedPalmPosition[0];
+          var rightHandX = frame.hands[0].stabilizedPalmPosition[0];
+          if (leftHandX > rightHandX){
+            leftHandX = frame.hands[0].stabilizedPalmPosition[0];
+            rightHandX = frame.hands[1].stabilizedPalmPosition[0];
+          }
+
+          if (hand.stabilizedPalmPosition[0] == leftHandX){ //left
             console.log("LEFT");
             if (projectile%3==0){
               fires.push(new Fireball(x1-.5,.95,fz));            

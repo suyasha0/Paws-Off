@@ -15,9 +15,9 @@ var ices = [];
 var framectr =0;
 var zRot = true;
 var z =0;var y=0;
-var fx =1; var fy =0.5; var fz =2;
+var fx =1; var fy =0.5; var fz =3.5;
 var lx =0; var ly =0.5; var lz =2;
-var ix =-1; var iy =0.5; var iz =2;
+var ix =-1; var iy =0.5; var iz =4.5;
 var startSwipe = false;
 var projectile =0;
 
@@ -160,7 +160,7 @@ function startScreen(){
 
 function play(){
 	//make ground move forward **commenting this because im getting dizzy testing.
-    // g.setZ(g.getZ()+.05);      
+  // g.setZ(g.getZ()+.05);      
   framectr+=1;
   if (framectr%30 ==0){
     var temp = new Pokeball(random(-4, 4), .95, 2);
@@ -179,37 +179,37 @@ function play(){
 	if (z<=-5){zRot = true;}
 	if (zRot){ z+=1;} else{ z-=1;}
   for (var i =0; i<fires.length;i++){
-    fires[i].fireContainer.setZ(fires[i].fireContainer.getZ() - .1);
-    fires[i].fireContainer.setY(fires[i].fireContainer.getY() + .04);
+    fires[i].fireContainer.setZ(fires[i].fireContainer.getZ() - .08);
+    // fires[i].fireContainer.setY(fires[i].fireContainer.getY() + .04);
     var fireArr = fires[i].fireContainer.getChildren();
     for (var j=0;j<fireArr.length; j++){
       fireArr[j].rotateZ(z);
     }
-    if (fires[i].fireContainer.getY() >5){
+    if (fires[i].fireContainer.getZ() < -10){
       fires[i].delete();
       fires.splice(i,1);
     }
   }
   for (var i =0; i<ices.length;i++){
-    ices[i].iceContainer.setZ(ices[i].iceContainer.getZ() - .1);
-    ices[i].iceContainer.setY(ices[i].iceContainer.getY() + .04);
+    ices[i].iceContainer.setZ(ices[i].iceContainer.getZ() - .06);
+    // ices[i].iceContainer.setY(ices[i].iceContainer.getY() + .04);
     var iceArr = ices[i].iceContainer.getChildren();
     for (var j=0;j<iceArr.length; j++){
       iceArr[j].spinZ(2);
     }
-    if (ices[i].iceContainer.getY() >5){
+    if (ices[i].iceContainer.getZ() < -10){
       ices[i].delete();
       ices.splice(i,1);
     }
   }
   for (var i =0; i<lightnings.length;i++){
-    lightnings[i].lightningContainer.setZ(lightnings[i].lightningContainer.getZ() - .1);
-    lightnings[i].lightningContainer.setY(lightnings[i].lightningContainer.getY() + .04);
+    lightnings[i].lightningContainer.setZ(lightnings[i].lightningContainer.getZ() - .12);
+    // lightnings[i].lightningContainer.setY(lightnings[i].lightningContainer.getY() + .04);
     var lightningArr = lightnings[i].lightningContainer.getChildren();
     for (var j=0;j<lightningArr.length; j++){
       lightningArr[j].spinZ(4);
     }
-    if (lightnings[i].lightningContainer.getY() >5){
+    if (lightnings[i].lightningContainer.getZ() < -10){
       lightnings[i].delete();
       lightnings.splice(i,1);
     }
@@ -233,10 +233,12 @@ var hx1, hy2, hz1, hx2, hy2, hz2;
 
 function handleHandData(frame) {
   // make sure we have exactly one hand being detected
+  var handPosition1;
+  var handPosition2;
   if (frame.hands.length == 2) {
     // get the position of the two hands
-    var handPosition1 = frame.hands[0].stabilizedPalmPosition;
-    var handPosition2 = frame.hands[1].stabilizedPalmPosition;
+    handPosition1 = frame.hands[0].stabilizedPalmPosition;
+    handPosition2 = frame.hands[1].stabilizedPalmPosition;
 
     // grab the x, y & z components of the hand position
     // these numbers are measured in millimeters
@@ -313,21 +315,54 @@ function handleHandData(frame) {
         //   gameMode=1;
         //   break;
         case "screenTap":
-          var pointableIds = gesture.pointableIds;
-          
-          if (projectile%3==0){
-            fires.push(new Fireball(x2+.5,.95,fz));
-             
-            fy+=0.5;
-            projectile+=1;
-          } else if (projectile%3==1){
-            lightnings.push(new LightningBolt(x2+.5,.95,lz));
-            projectile+=1;
-          } else{
-            ices.push(new Ice(x2+.5,.95,iz));
-            projectile+=1;
+          // var pointableIds = gesture.pointableIds;
+
+          // console.log("SCREENTAP",x2,y2);
+          // if (projectile%3==0){
+          //   fires.push(new Fireball(x2+.5,.95,fz));            
+          //   fy+=0.5;
+          //   projectile+=1;
+          // } else if (projectile%3==1){
+          //   lightnings.push(new LightningBolt(x2+.5,.95,lz));
+          //   projectile+=1;
+          // } else{
+          //   ices.push(new Ice(x2+.5,.95,iz));
+          //   projectile+=1;
+          // }
+          var handIds = gesture.handIds;
+          var hand;
+          handIds.forEach(function(handId){
+            hand = frame.hand(handId);
+          });
+          if (hand.stabilizedPalmPosition[0] == frame.hands[1].stabilizedPalmPosition[0]){ //left
+            console.log("LEFT");
+            if (projectile%3==0){
+              fires.push(new Fireball(x1-.5,.95,fz));            
+              fy+=0.5;
+              projectile+=1;
+            } else if (projectile%3==1){
+              lightnings.push(new LightningBolt(x1-.5,.95,lz));
+              projectile+=1;
+            } else{
+              ices.push(new Ice(x1-.5,.95,iz));
+              projectile+=1;
+            }
+          } else { //right?
+            console.log("RIGHT");
+            if (projectile%3==0){
+              fires.push(new Fireball(x2+.5,.95,fz));            
+              fy+=0.5;
+              projectile+=1;
+            } else if (projectile%3==1){
+              lightnings.push(new LightningBolt(x2+.5,.95,lz));
+              projectile+=1;
+            } else{
+              ices.push(new Ice(x2+.5,.95,iz));
+              projectile+=1;
+            }
           }
-          console.log("SCREENTAP",x2,y2);
+          console.log(frame.hands[0].stabilizedPalmPosition); //1 is left, 0 is right
+          
          
           // console.log("PUSHED:", fires); //so i think it added fireballs?
           break;
@@ -395,7 +430,7 @@ function Fireball(x,y,z){
     x: x,
     y: y,
     z: z,
-    rotationX:120,
+    rotationX:90,
     rotationY:0,
     rotationZ:-5,
     scaleX:5.,
@@ -421,7 +456,7 @@ function LightningBolt(x,y,z){
     x: x,
     y: y,
     z: z,
-    rotationX:-135,
+    // rotationX:-135,
     rotationY:0,
     // rotationZ:10,
     scaleX:1,
@@ -444,7 +479,7 @@ function Ice(x,y,z){
     x: x,
     y: y,
     z: z,
-    rotationX:-135,
+    rotationX:180,
     rotationY:0,
     scaleX:.4,
     scaleY:.4,

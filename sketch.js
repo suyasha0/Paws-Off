@@ -43,28 +43,28 @@ function setup() {
   // every time the Leap provides us with hand data we will ask it to run this function
   leapController.loop(handleHandData);
   // create a plane to serve as our "ground"
-  hand1 = new Box({
+  hand1 = new OBJ({
+    asset: 'paw_obj',
+    mtl: 'paw_mtl',
     x: -0.5,
     y: 0,
     z: -1,
-    width: 0.1,
-    height: 0.1,
-    depth: 0.1,
-    red: 255,
-    green: 0,
-    blue: 0
+    rotationX:-90,
+    scaleX:.1,
+    scaleY:.1,
+    scaleZ:.1,
    });
   
-  hand2 = new Box({
+  hand2 = new OBJ({
+    asset: 'paw_obj',
+    mtl: 'paw_mtl',
     x: 0.5,
     y: 0,
     z: -1,
-    width: 0.1,
-    height: 0.1,
-    depth: 0.1,
-    red: 0,
-    green: 255,
-    blue: 0
+    rotationX:-90,
+    scaleX:.1,
+    scaleY:.1,
+    scaleZ:.1,
   });
 
   g = new Plane({
@@ -91,8 +91,8 @@ function setup() {
     asset: 'startscreen'
   });
   world.add(startPlane);
-  pokeballs.push(new Pokeball(0.15, .95, 4.9)); // basically close enough to hit user 
-  pokeballs.push(new Pokeball(0.15, .95, 4.7));
+  // pokeballs.push(new Pokeball(0.15, .95, 4.9)); // basically close enough to hit user 
+  // pokeballs.push(new Pokeball(0.15, .95, 4.7));
   // var temp = new Pokeball(-.15, .95, 4.9); // basically close enough to hit user 
   // console.log("WORLD",world.getUserPosition().x);
   // console.log(temp);

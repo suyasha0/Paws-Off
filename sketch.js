@@ -6,15 +6,12 @@ var hand1, hand2;
 //global ground to move in draw
 var g;
 //lightning
-var lightningContainer; var fireContainer; var iceContainer;
-var lightnings =[];
-var fires =[];
-var ices = [];
+var lightningContainer, fireContainer; 
 
 var zRot = true;
 var z =0;var y=0;
 
-var lightningBolt; var fire; var ice;
+var lightningBolt, fire;
 //pokeball array
 var pokeballs = [];
 var pokeball;
@@ -80,17 +77,58 @@ function setup() {
     height: 15,
     asset: 'startscreen'
   });
-  world.add(startPlane);
+ world.add(startPlane);
 
-  world.add(LightningBolt());
-  world.add(Ice());
+  pokeball = new OBJ({
+    asset: 'ball_obj',
+    mtl: 'ball_mtl',
+    x: 5,
+    y: 1.3,
+    z: 0,
+    rotationX:0,
+    rotationY:180,
+    scaleX:.3,
+    scaleY:.3,
+    scaleZ:.3,
+  });
+
+  lightningContainer = new Container3D({x:0,y:0,z:0});
+  lightningBolt = new OBJ({
+    asset: 'lightningBolt_obj',
+    mtl: 'lightningBolt_mtl',
+    x: -1,
+    y: 1,
+    z: 0,
+    rotationX:-135,
+    rotationY:0,
+    // rotationZ:10,
+    scaleX:1,
+    scaleY:1,
+    scaleZ:1,
+  });
+  lightningContainer.addChild(lightningBolt);
+  world.add(lightningContainer);
+
+  ice = new OBJ({
+    asset: 'ice_obj',
+    mtl: 'ice_mtl',
+    x: 0,
+    y: .5,
+    z: 0,
+    rotationX:-135,
+    rotationY:0,
+    scaleX:.05,
+    scaleY:.05,
+    scaleZ:.05,
+  });
+  world.add(ice);
+
   world.add(Fireball());
-
- // var ball = new Pokeball(1,2,0);
 
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
+
 }
 
 function draw() {
@@ -101,14 +139,18 @@ function draw() {
   } else{
   	endScreen();
   }
+
   //fire.spinY(1);
   lightningBolt.spinZ(2);
+
   ice.spinZ(1);
   if (z>=10){
     zRot = false;
-  } if (z<=-10){
+  }
+  if (z<=-10){
     zRot = true;
-  } if (zRot){
+  }
+  if (zRot){
     z+=2;
   } else{
     z-=2;
@@ -117,8 +159,8 @@ function draw() {
   fire.rotateZ(z);
   //lightningBolt.rotateY(y);
   //moving lightning away kinda
-  // fireContainer.setZ(fireContainer.getZ() - .1);
-  // fireContainer.setY(fireContainer.getY() + .04);
+  // lightningContainer.setZ(lightningContainer.getZ() - .05);
+  // lightningContainer.setY(lightningContainer.getY() + .02);
   var pos = world.getUserPosition(); 
     // now evaluate
   if (pos.x > 47) { //width of plane, looks good when comes to edge
@@ -135,18 +177,17 @@ function draw() {
 }
 
 function startScreen(){
-	hand1.hide();
-	hand2.hide();
+	//hand1.hide();
+	//hand2.hide();
 }
 
 function play(){
 	//make ground move forward
     //g.setZ(g.getZ()+.05);       **commenting this because im getting dizzy testing.
-    var create = random(100);
-	if(create<2){
-	 	var temp = new Pokeball(random(-5, 5), 1, 2);
-	 	pokeballs.push( temp );
-	}
+
+	var temp = new Pokeball(random(-5, 5), 1, 2);
+	pokeballs.push(temp);
+
 	for (var i = 0; i < pokeballs.length; i++) {
 		var result = pokeballs[i].move();
 		if (result == "gone") {
@@ -154,7 +195,6 @@ function play(){
 			i-=1;
 		}
 	}
-	console.log(world.getUserPosition());
 
 	if (z>=5){
 		zRot = false;
@@ -174,6 +214,7 @@ function endScreen(){
 	hand1.hide();
 	hand2.hide();
 }
+var hx1, hy2, hz1, hx2, hy2, hz2;
 
 function handleHandData(frame) {
     // make sure we have exactly one hand being detected
@@ -184,46 +225,53 @@ function handleHandData(frame) {
   
       // grab the x, y & z components of the hand position
       // these numbers are measured in millimeters
-      var hx1 = handPosition1[0];
-      var hy1 = handPosition1[1];
-      var hz1 = handPosition1[2];
+      hx1 = handPosition1[0];
+      hy1 = handPosition1[1];
+      //hz1 = handPosition1[2];
   
       // grab the x, y & z components of the hand position
       // these numbers are measured in millimeters
-      var hx2 = handPosition2[0];
-      var hy2 = handPosition2[1];
-      var hz2 = handPosition2[2];
+      hx2 = handPosition2[0];
+      hy2 = handPosition2[1];
+      //hz2 = handPosition2[2];
   
       // swap them so that handPosition1 is the hand on the left
+      
       if (hx1 > hx2) {
         hx1 = handPosition2[0];
         hy1 = handPosition2[1];
-        hz1 = handPosition2[2];
+        //hz1 = handPosition2[2];
   
         hx2 = handPosition1[0];
         hy2 = handPosition1[1];
-        hz2 = handPosition1[2];
+        //hz2 = handPosition1[2];
       }
-      console.log(hx1 + "," + hy1 + " - " + hx2 + ", " + hy2);
+
+      //console.log(hx1 + "," + hy1 + " - " + hx2 + ", " + hy2);
   
       // x is left-right, y is up-down, z is forward-back
       // for this example we will use x & y to move the circle around the screen
       // let's map the x & y values to screen coordinates
       // note that determining the correct values for your application takes some trial and error!
-      var x1 = map(hx1, -200, 200, -1, 0);
-      var y1 = map(hy1, 0, 500, -1, 1);
-  
-      var x2 = map(hx2, -200, 200, 0, 1);
-      var y2 = map(hy2, 0, 500, -1, 1);
-  
+
+   	var x1 = map(hx1, -200, 200, -1, 0);
+    var y1 = map(hy1, 0, 500, -1, 2);
+    //var z1 = map(hz1, -200, 200, -1, 2);
+
+    var x2 = map(hx2, -200, 200, 0, 1);
+    var y2 = map(hy2, 0, 500, -1, 2);
+    //var z2 = map(hz1, -200, 200, -1, 2);
+
       // OK, now we have two hands ... let's use this information to draw a visual representation
       // on the screen for the user
   
       // now move the hands
       hand1.setX( x1 );
       hand1.setY( y1 );
+      //hand1.setY( z1 );
       hand2.setX( x2 );
       hand2.setY( y2 );
+      //hand1.setY( z2 );
   
       if (y1 < y2) {
         var diff = y2 - y1;
@@ -235,6 +283,7 @@ function handleHandData(frame) {
       }
     }
 
+    
     if(frame.valid && frame.gestures.length > 0 && gameMode==0){
       frame.gestures.forEach(function(gesture){
         switch (gesture.type){
@@ -247,6 +296,7 @@ function handleHandData(frame) {
         }
       });
     }
+    
   }
 
   function Pokeball(x,y,z) {
@@ -279,6 +329,13 @@ function handleHandData(frame) {
 		}
 
     }
+
+    function isCollision(){
+		if(dist(this.pokeball.x, hy1)<1 && dist(this.pokeball.y, hy1)<1 && dist(this.pokeball.z, hz1)<1){
+			console.log("collided!");
+		}
+	}
+
   }
 
 function Fireball(){
@@ -298,41 +355,4 @@ function Fireball(){
   });
   fireContainer.addChild(fire);
   return fireContainer;
-}
-
-function Ice(){
-  iceContainer = new Container3D({x:0,y:0,z:0});
-  ice = new OBJ({
-    asset: 'ice_obj',
-    mtl: 'ice_mtl',
-    x: 0,
-    y: 1,
-    z: 0,
-    rotationX:-135,
-    rotationY:0,
-    scaleX:.4,
-    scaleY:.4,
-    scaleZ:.4,
-  });
-  iceContainer.addChild(ice);
-  return iceContainer;
-}
-
-function LightningBolt(){
-  lightningContainer = new Container3D({x:0,y:0,z:0});
-  lightningBolt = new OBJ({
-    asset: 'lightningBolt_obj',
-    mtl: 'lightningBolt_mtl',
-    x: -1,
-    y: 1,
-    z: 0,
-    rotationX:-135,
-    rotationY:0,
-    // rotationZ:10,
-    scaleX:1,
-    scaleY:1,
-    scaleZ:1,
-  });
-  lightningContainer.addChild(lightningBolt);
-  return lightningContainer;
 }

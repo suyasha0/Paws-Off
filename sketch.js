@@ -86,7 +86,7 @@ function setup() {
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
-
+  // world.setUserPosition(0, 10, 5); //TESTING PURPOSES
 }
 
 function draw() {
@@ -138,7 +138,7 @@ function play(){
 	//make ground move forward
     //g.setZ(g.getZ()+.05);       **commenting this because im getting dizzy testing.
 
-	var temp = new Pokeball(random(-5, 5), 1, 2);
+	var temp = new Pokeball(random(-5, 5), .95, 2);
 	pokeballs.push(temp);
 
 	for (var i = 0; i < pokeballs.length; i++) {
@@ -149,18 +149,9 @@ function play(){
 		}
 	}
 	//console.log(world.getUserPosition());
-
-	if (z>=5){
-		zRot = false;
-	}
-	if (z<=-5){
-		zRot = true;
-	}
-	if (zRot){
-		z+=1;
-	} else{
-		z-=1;
-  }
+	if (z>=5){zRot = false;}
+	if (z<=-5){zRot = true;}
+	if (zRot){ z+=1;} else{ z-=1;}
   // for (var i =0; i<fires.length;i++){
   //   fires[i].setZ(fires[i].getZ() - .1);
   //   fires[i].setY(fires[i].getY() + .04);
@@ -179,148 +170,146 @@ function endScreen(){
 var hx1, hy2, hz1, hx2, hy2, hz2;
 
 function handleHandData(frame) {
-    // make sure we have exactly one hand being detected
-    if (frame.hands.length == 2) {
-      // get the position of the two hands
-      var handPosition1 = frame.hands[0].stabilizedPalmPosition;
-      var handPosition2 = frame.hands[1].stabilizedPalmPosition;
-  
-      // grab the x, y & z components of the hand position
-      // these numbers are measured in millimeters
-      hx1 = handPosition1[0];
-      hy1 = handPosition1[1];
-      //hz1 = handPosition1[2];
-  
-      // grab the x, y & z components of the hand position
-      // these numbers are measured in millimeters
-      hx2 = handPosition2[0];
-      hy2 = handPosition2[1];
-      //hz2 = handPosition2[2];
-  
-      // swap them so that handPosition1 is the hand on the left
-      
-      if (hx1 > hx2) {
-        hx1 = handPosition2[0];
-        hy1 = handPosition2[1];
-        //hz1 = handPosition2[2];
-  
-        hx2 = handPosition1[0];
-        hy2 = handPosition1[1];
-        //hz2 = handPosition1[2];
-      }
-     // console.log(hx1 + "," + hy1 + " - " + hx2 + ", " + hy2);
-  
-      // x is left-right, y is up-down, z is forward-back
-      // for this example we will use x & y to move the circle around the screen
-      // let's map the x & y values to screen coordinates
-      // note that determining the correct values for your application takes some trial and error!
+  // make sure we have exactly one hand being detected
+  if (frame.hands.length == 2) {
+    // get the position of the two hands
+    var handPosition1 = frame.hands[0].stabilizedPalmPosition;
+    var handPosition2 = frame.hands[1].stabilizedPalmPosition;
 
-   	var x1 = map(hx1, -200, 200, -1, 0);
-    var y1 = map(hy1, 0, 500, -1, 2);
-    //var z1 = map(hz1, -200, 200, -1, 2);
+    // grab the x, y & z components of the hand position
+    // these numbers are measured in millimeters
+    hx1 = handPosition1[0];
+    hy1 = handPosition1[1];
+    //hz1 = handPosition1[2];
 
-    var x2 = map(hx2, -200, 200, 0, 1);
-    var y2 = map(hy2, 0, 500, -1, 2);
-    //var z2 = map(hz1, -200, 200, -1, 2);
+    // grab the x, y & z components of the hand position
+    // these numbers are measured in millimeters
+    hx2 = handPosition2[0];
+    hy2 = handPosition2[1];
+    //hz2 = handPosition2[2];
 
-      // OK, now we have two hands ... let's use this information to draw a visual representation
-      // on the screen for the user
-  
-      // now move the hands
-      hand1.setX( x1 );
-      hand1.setY( y1 );
-      //hand1.setY( z1 );
-      hand2.setX( x2 );
-      hand2.setY( y2 );
-      //hand1.setY( z2 );
-  
-      // if (y1 < y2) {
-      //   var diff = y2 - y1;
-      //   //world.camera.nudgePosition( map(diff, 0, 1, 0, -0.1), 0, 0);
-      // }
-      // else {
-      //   var diff = y1 - y2;
-      //   //world.camera.nudgePosition( map(diff, 0, 1, 0, 0.1), 0, 0);
-      // }
-    }
-
-    if(gameMode==0 && frame.valid && frame.gestures.length > 0 ){
-      frame.gestures.forEach(function(gesture){
-        switch (gesture.type){
-          case "swipe":
-         	  world.remove(startPlane);
-         	  hand1.show();
-			      hand2.show();
-            gameMode=1;
-            break;
-          // case "screenTap":
-          //   var pointableIds = gesture.pointableIds;
-          //   console.log("SCREENTAP",pointableIds);
-          //   break;
-        }
-      });
-    }
-    if(gameMode==1 && frame.valid && frame.gestures.length > 0 ){
-      frame.gestures.forEach(function(gesture){
-        switch (gesture.type){
-          // case "swipe":
-         	//   world.remove(startPlane);
-         	//   hand1.show();
-			    //   hand2.show();
-          //   gameMode=1;
-          //   break;
-          case "screenTap":
-            var pointableIds = gesture.pointableIds;
-            console.log("SCREENTAP",pointableIds);
-            // fires.push(Fireball(fx,fy,fz));
-            // console.log("PUSHED:", fires)
-
-            break;
-        }
-        // console.log("HELLO");
-      });
-    }
+    // swap them so that handPosition1 is the hand on the left
     
+    if (hx1 > hx2) {
+      hx1 = handPosition2[0];
+      hy1 = handPosition2[1];
+      //hz1 = handPosition2[2];
+
+      hx2 = handPosition1[0];
+      hy2 = handPosition1[1];
+      //hz2 = handPosition1[2];
+    }
+    // console.log(hx1 + "," + hy1 + " - " + hx2 + ", " + hy2);
+
+    // x is left-right, y is up-down, z is forward-back
+    // for this example we will use x & y to move the circle around the screen
+    // let's map the x & y values to screen coordinates
+    // note that determining the correct values for your application takes some trial and error!
+
+  var x1 = map(hx1, -200, 200, -1, 0);
+  var y1 = map(hy1, 0, 500, -1, 2);
+  //var z1 = map(hz1, -200, 200, -1, 2);
+
+  var x2 = map(hx2, -200, 200, 0, 1);
+  var y2 = map(hy2, 0, 500, -1, 2);
+  //var z2 = map(hz1, -200, 200, -1, 2);
+
+    // OK, now we have two hands ... let's use this information to draw a visual representation
+    // on the screen for the user
+
+    // now move the hands
+    hand1.setX( x1 );
+    hand1.setY( y1 );
+    //hand1.setY( z1 );
+    hand2.setX( x2 );
+    hand2.setY( y2 );
+    //hand1.setY( z2 );
+
+    // if (y1 < y2) {
+    //   var diff = y2 - y1;
+    //   //world.camera.nudgePosition( map(diff, 0, 1, 0, -0.1), 0, 0);
+    // }
+    // else {
+    //   var diff = y1 - y2;
+    //   //world.camera.nudgePosition( map(diff, 0, 1, 0, 0.1), 0, 0);
+    // }
   }
 
-  function Pokeball(x,y,z) {
-    this.pokeball = new OBJ({
-      asset: 'ball_obj',
-      mtl: 'ball_mtl',
-      x:x, y:y, z:z,
-      rotationX:0,
-      rotationY:90,
-      scaleX:.8,
-      scaleY:.8,
-      scaleZ:.8,
+  if(gameMode==0 && frame.valid && frame.gestures.length > 0 ){
+    frame.gestures.forEach(function(gesture){
+      switch (gesture.type){
+        case "swipe":
+          world.remove(startPlane);
+          hand1.show();
+          hand2.show();
+          gameMode=1;
+          break;
+        // case "screenTap":
+        //   var pointableIds = gesture.pointableIds;
+        //   console.log("SCREENTAP",pointableIds);
+        //   break;
+      }
     });
+  }
+  if(gameMode==1 && frame.valid && frame.gestures.length > 0 ){
+    frame.gestures.forEach(function(gesture){
+      switch (gesture.type){
+        // case "swipe":
+        //   world.remove(startPlane);
+        //   hand1.show();
+        //   hand2.show();
+        //   gameMode=1;
+        //   break;
+        case "screenTap":
+          var pointableIds = gesture.pointableIds;
+          console.log("SCREENTAP",pointableIds);
+          // fires.push(Fireball(fx,fy,fz));
+          // console.log("PUSHED:", fires)
 
-    world.add(this.pokeball);
+          break;
+      }
+      // console.log("HELLO");
+    });
+  }
+  
+}
+  
+function Pokeball(x,y,z) {
+  this.pokeball = new OBJ({
+    asset: 'ball_obj',
+    mtl: 'ball_mtl',
+    x:x, y:y, z:z,
+    rotationX:0,
+    rotationY:90,
+    scaleX:.3,
+    scaleY:.3,
+    scaleZ:.3,
+  });
+
+  world.add(this.pokeball);
 
 	this.move = function(){
 		this.pokeball.nudge(0, 0, .1);
 
 		if(this.pokeball.x< -.1){
-			this.pokeball.nudge(.5, 0, 0);
+			this.pokeball.nudge(.1, 0, 0);
 		}
 		else if(this.pokeball.x>.1){
-			this.pokeball.nudge(-.5, 0, 0);
+			this.pokeball.nudge(-.1, 0, 0);
 		}
 
 		if(this.pokeball.z>5){
 			world.remove(this.pokeball);
 			return "gone";
 		}
+  }
 
-    }
-
-    function isCollision(){
+  function isCollision(){
 		if(dist(this.pokeball.x, hy1)<1 && dist(this.pokeball.y, hy1)<1 && dist(this.pokeball.z, hz1)<1){
 			console.log("collided!");
 		}
 	}
-
-  }
+}
 
 function Fireball(x,y,z){
   fireContainer = new Container3D({x:0,y:0,z:0});

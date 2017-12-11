@@ -78,45 +78,11 @@ function setup() {
     height: 15,
     asset: 'startscreen'
   });
- world.add(startPlane);
+  world.add(startPlane);
 
   world.add(LightningBolt());
   world.add(Ice());
-//  world.add(Fireball(0,2,0));
-
-  lightningContainer = new Container3D({x:0,y:0,z:0});
-  lightningBolt = new OBJ({
-    asset: 'lightningBolt_obj',
-    mtl: 'lightningBolt_mtl',
-    x: -1,
-    y: 1,
-    z: 0,
-    rotationX:-135,
-    rotationY:0,
-    // rotationZ:10,
-    scaleX:1,
-    scaleY:1,
-    scaleZ:1,
-  });
-  lightningContainer.addChild(lightningBolt);
-  world.add(lightningContainer);
-
-  ice = new OBJ({
-    asset: 'ice_obj',
-    mtl: 'ice_mtl',
-    x: 0,
-    y: .5,
-    z: 0,
-    rotationX:-135,
-    rotationY:0,
-    scaleX:.05,
-    scaleY:.05,
-    scaleZ:.05,
-  });
-  world.add(ice);
-
   world.add(Fireball());
-
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
@@ -373,4 +339,41 @@ function Fireball(x,y,z){
   });
   fireContainer.addChild(fire);
   return fireContainer;
+}
+
+function LightningBolt(){
+  lightningContainer = new Container3D({x:0,y:0,z:0});
+  lightningBolt = new OBJ({
+    asset: 'lightningBolt_obj',
+    mtl: 'lightningBolt_mtl',
+    x: -1,
+    y: 1,
+    z: 0,
+    rotationX:-135,
+    rotationY:0,
+    // rotationZ:10,
+    scaleX:1,
+    scaleY:1,
+    scaleZ:1,
+  });
+  lightningContainer.addChild(lightningBolt);
+  return lightningContainer;
+}
+
+function Ice(){
+  iceContainer = new Container3D({x:0,y:0,z:0});
+  ice = new OBJ({
+    asset: 'ice_obj',
+    mtl: 'ice_mtl',
+    x: 0,
+    y: 1,
+    z: 0,
+    rotationX:-135,
+    rotationY:0,
+    scaleX:.4,
+    scaleY:.4,
+    scaleZ:.4,
+  });
+  iceContainer.addChild(ice);
+  return iceContainer;
 }

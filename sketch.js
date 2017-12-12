@@ -84,24 +84,13 @@ function setup() {
 
   startPlane = new Plane({
     x: 0,
-    y: 3,
-    z: -3,
-    width: 15,
-    height: 15,
+    y: 3.2,
+    z: -1,
+    width: 19,
+    height: 19,
     asset: 'startscreen'
   });
   world.add(startPlane);
-
-  // var test = new Box({
-  //   x:0,
-  //   y:2,
-  //   z:5,
-  //   width:.5,
-  //   height:.5,
-  //   depth:.5,
-  //   red:255,
-  // })
-  // world.add(test);
  
   // pokeballs.push(new Pokeball(0.35, .95, 4.45)); // basically close enough to hit user
   // new Pokeball(0.35, .95, 4.45) corresponds to x:0.4, y:0, z:-0.5,
@@ -117,24 +106,10 @@ function setup() {
   // console.log("DISTANCE Right",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, ices[0].ice.x, ices[0].ice.y, ices[0].ice.z));
   // //distance of < 1.7 seems good for ice
 
-
   // fires.push(new Fireball(0,1,3.8));
   // console.log("DISTANCE Right",dist(pokeballs[0].pokeball.x, pokeballs[0].pokeball.y, pokeballs[0].pokeball.z, fires[0].fire.x, fires[0].fire.y, fires[0].fire.z)); //distance of < 1.7 seems good for ice
   // //distance for fire seems < 1
-  // ices.push(new Ice());
-  //world.add(Fireball());
 
-  // pokeballs.push(new Pokeball(0.15, .95, 4.7));
-  // var temp = new Pokeball(-.15, .95, 4.9); // basically close enough to hit user 
-  // console.log("WORLD",world.getUserPosition().x);
-  // console.log(temp);
-  // console.log("WORDL2", temp.pokeball.x);
-  // console.log("WORLD",world.getUserPosition().y);
-  // console.log("WORDL2", temp.pokeball.y);
-  //  console.log("DISTANCE Right",dist(pokeballs[0].pokeball.x, pokeballs[0].pokeball.y, pokeballs[0].pokeball.z, hand2.x, hand2.y+.95, hand2.z+5));
-  //  //lets have distance be < .16 
-  //  console.log("DISTANCE Left",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5));
-   
   //  for (var i =0; i<pokeballs.length; i++){
   //   if (dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5)<.16){
   //     pokeballs[i].delete();
@@ -146,9 +121,6 @@ function setup() {
   //   }
   //  }
   // console.log("hand right", hand2.x, hand2.y+.95, hand2.z+5);
-   // if(dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y)<.2){
-  //   // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
-  // }
  
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
@@ -186,7 +158,7 @@ function startScreen(){
 
 function play(){
 	//make ground move forward **commenting this because im getting dizzy testing.
-  // g.setZ(g.getZ()+.05);      
+  g.setZ(g.getZ()+.05);      
   framectr+=1;
   if (framectr%30 ==0){
     var temp = new Pokeball(random(-4, 4), .95, 2);
@@ -322,13 +294,11 @@ function handleHandData(frame) {
     // get the position of the two hands
     handPosition1 = frame.hands[0].stabilizedPalmPosition;
     handPosition2 = frame.hands[1].stabilizedPalmPosition;
-
     // grab the x, y & z components of the hand position
     // these numbers are measured in millimeters
     hx1 = handPosition1[0];
     hy1 = handPosition1[1];
     //hz1 = handPosition1[2];
-
     // grab the x, y & z components of the hand position
     // these numbers are measured in millimeters
     hx2 = handPosition2[0];
@@ -358,9 +328,6 @@ function handleHandData(frame) {
   x2 = map(hx2, -200, 200, -0.1, 0.5);
   y2 = map(hy2, 0, 500, -0.5, 0.4);
   //var z2 = map(hz1, -200, 200, -1, 2);
-
-    // OK, now we have two hands ... let's use this information to draw a visual representation
-    // on the screen for the user
 
     // now move the hands
     hand1.setX( x1 );
@@ -410,7 +377,6 @@ function handleHandData(frame) {
             leftHandX = frame.hands[0].stabilizedPalmPosition[0];
             rightHandX = frame.hands[1].stabilizedPalmPosition[0];
           }
-
           if (hand.stabilizedPalmPosition[0] == leftHandX){ //left
             console.log("LEFT");
             if (projectile%3==0){
@@ -438,10 +404,6 @@ function handleHandData(frame) {
               projectile+=1;
             }
           }
-          console.log(frame.hands[0].stabilizedPalmPosition); //1 is left, 0 is right
-          
-         
-          // console.log("PUSHED:", fires); //so i think it added fireballs?
           break;
       }
       // console.log("HELLO");

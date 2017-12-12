@@ -1,4 +1,4 @@
-var world, startPlane, endPlane;
+var world, startPlane;
 // our Leap motion hand sensor controller object (instantiated inside of 'setup');
 var leapController;
 // our hand displays (simple shapes that will show up in front of the user)
@@ -9,7 +9,7 @@ var health = 5;
 var losePlane;var winPlane;
 var gameLost = true;
 var gameWon = true;
-var grassHeight = 100;
+var grassHeight = 200;
 var mewtwo;
 
 //global ground to move in draw
@@ -33,14 +33,7 @@ var lightningBolt, fire;
 var pokeballs = [];
 var pokeball;
 // 0 : startscreen, 1 : play, -1 : endscreen
-var gameMode = -1;
-
-function preload(){
-	music = loadSound("./sounds/easy.mp3");
-	shootSound = loadSound("./sounds/blip.mp3");
-	hitSound = loadSound("./sounds/fail.mp3");
-}
-
+var gameMode = 0;
 function setup() {
   // no canvas needed
   noCanvas();
@@ -111,9 +104,9 @@ function setup() {
   startPlane = new Plane({
     x: 0,
     y: 3.2,
-    z: 0,
-    width: 18,
-    height: 18,
+    z: -1,
+    width: 19,
+    height: 19,
     asset: 'startscreen'
   });
   world.add(startPlane);
@@ -124,10 +117,10 @@ function setup() {
     z: 4.8,
     width: 30,
     height: 19,
-    // red:0,
-    // green:0,
-    // blue:0,
-    asset: 'endscreen'
+    red:0,
+    green:0,
+    blue:0,
+    // asset: 'startscreen'
   });
   winPlane = new Plane({
     x: 0,
@@ -150,18 +143,13 @@ function setup() {
 }
 
 function draw() {
-
-  if(health == 0){
-  	gameMode = -1;
-  }
-
   if (startSwipe){
     world.remove(startPlane);
     startSwipe = false; //fix the remove startplane thing being in a loop error
   }
-
   if(gameMode==0){
     startScreen();
+    // play();// TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
   } else if(gameMode==1){    
   	play();
   } else if(gameMode==2){
@@ -192,13 +180,14 @@ function draw() {
 }
 
 function startScreen(){
-	world.add(startPlane);
-}	
+	//hand1.hide();
+	//hand2.hide();
+}
 
 function play(){
 	//make ground move forward **commenting this because im getting dizzy testing.
   g.setZ(g.getZ()+.05);   
-  mewtwo.setZ(mewtwo.getZ()+.09);   
+  mewtwo.setZ(mewtwo.getZ()+.092);   
   console.log("G",g.getZ()) ;
   console.log("mewtwo",mewtwo.getZ()) ;
   framectr+=1;
@@ -209,88 +198,87 @@ function play(){
 
 	for (var i = 0; i < pokeballs.length; i++) {
 		var result = pokeballs[i].move();
-   
-	    var check = true;
-	    if (result =="gone"){
-	      pokeballs.splice(i, 1);
-	      check = false;
-	    }
-	    if (check && dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5)<.16){
-	      pokeballs[i].delete();
-	      blipSound.play();
-	      pokeballs.splice(i, 1);
-	      check = false;
-	    }
-	    if (check && dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand2.x, hand2.y+.95, hand2.z+5)<.16){
-	      pokeballs[i].delete();
-	      blipSound.play();
-	      pokeballs.splice(i, 1);
-	      check = false;
-	    } //hand checking
-	    
-	    if (check){ //if no delete then check for health/behind u
-	      if(dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, world.getUserPosition().x, world.getUserPosition().y, world.getUserPosition().z)<.18){
-	        //distance for pokeball close enough to user
-	        pokeballs[i].delete();
-	        pokeballs.splice(i, 1);
-	        hitSound.play();
-	        health -=1;
-	        // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
-	      }
-	      else if (result == "gone") {
-	        pokeballs.splice(i, 1);
-	        i-=1;
-	      } 
-	    } 
-  	}
+    // console.log("DISTANCE",dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, world.getUserPosition().x, world.getUserPosition().y, world.getUserPosition().z));
+    var check = true;
+    if (result =="gone"){
+      pokeballs.splice(i, 1);
+      check = false;
+    }
+    if (check && dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5)<.16){
+      pokeballs[i].delete();
+      pokeballs.splice(i, 1);
+      check = false;
+      console.log("LEFT HAND I THINK??");
+    }
+    if (check && dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand2.x, hand2.y+.95, hand2.z+5)<.16){
+      pokeballs[i].delete();
+      pokeballs.splice(i, 1);
+      check = false;
+      console.log("RIGHT HAND I THINK??");
+    } //hand checking
+    
+    if (check){ //if no delete then check for health/behind u
+      if(dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, world.getUserPosition().x, world.getUserPosition().y, world.getUserPosition().z)<.18){
+        //distance for pokeball close enough to user
+        pokeballs[i].delete();
+        pokeballs.splice(i, 1);
+        health -=1;
+        console.log("DELETED", health);
+        // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
+      }
+      else if (result == "gone") {
+        pokeballs.splice(i, 1);
+        i-=1;
+      } 
+    } 
+  }
 	//console.log(world.getUserPosition());
 	if (z>=5){zRot = false;}
 	if (z<=-5){zRot = true;}
 	if (zRot){ z+=1;} else{ z-=1;}
-	for (var i =0; i<fires.length;i++){
-	fires[i].fireContainer.setZ(fires[i].fireContainer.getZ() - .08);
-	// fires[i].fireContainer.setY(fires[i].fireContainer.getY() + .04);
-	var fireArr = fires[i].fireContainer.getChildren();
-	for (var j=0;j<fireArr.length; j++){
-	  fireArr[j].rotateZ(z);
-	}
-	var fireCheck = true;
-	for (var j =0; j<pokeballs.length; j++){
-	  if (dist(pokeballs[j].pokeball.x, pokeballs[j].pokeball.y, pokeballs[j].pokeball.z, fires[i].fire.x, fires[i].fire.y, fires[i].fire.z) <.5){
-	    //if collision, delete projectile and pokeball
-	    fires[i].delete();
-	    fires.splice(i,1);
-	    shootSound.play();
-	    pokeballs[j].delete();
-	    pokeballs.splice(j, 1);
-	    fireCheck = false;
-	    break;
-	  } //distance of < 1 is fire
-	}
-	if (fireCheck && fires[i].fireContainer.getZ() < -10){ //when far away 
-	  fires[i].delete();
-	  fires.splice(i,1);
-	}
-	}
-	for (var i =0; i<ices.length;i++){
-	ices[i].iceContainer.setZ(ices[i].iceContainer.getZ() - .06);
-	// ices[i].iceContainer.setY(ices[i].iceContainer.getY() + .04);
-	var iceArr = ices[i].iceContainer.getChildren();
-	for (var j=0;j<iceArr.length; j++){
-	  iceArr[j].spinZ(2);
-	}
-	var iceCheck = true;
-	for (var j =0; j<pokeballs.length; j++){
-	  if (dist(pokeballs[j].pokeball.x, pokeballs[j].pokeball.y, pokeballs[j].pokeball.z, ices[i].ice.x, ices[i].ice.y, ices[i].ice.z) <.8){
-	    //if collision, delete projectile and pokeball
-	    ices[i].delete();
-	    ices.splice(i,1);
-	    pokeballs[j].delete();
-	    pokeballs.splice(j, 1);
-	    iceCheck = false;
-	    break;
-	  } //distance of < 1 is ice
-	}
+  for (var i =0; i<fires.length;i++){
+    fires[i].fireContainer.setZ(fires[i].fireContainer.getZ() - .08);
+    // fires[i].fireContainer.setY(fires[i].fireContainer.getY() + .04);
+    var fireArr = fires[i].fireContainer.getChildren();
+    for (var j=0;j<fireArr.length; j++){
+      fireArr[j].rotateZ(z);
+    }
+    var fireCheck = true;
+    for (var j =0; j<pokeballs.length; j++){
+      if (dist(pokeballs[j].pokeball.x, pokeballs[j].pokeball.y, pokeballs[j].pokeball.z, fires[i].fire.x, fires[i].fire.y, fires[i].fire.z) <.5){
+        //if collision, delete projectile and pokeball
+        fires[i].delete();
+        fires.splice(i,1);
+        pokeballs[j].delete();
+        pokeballs.splice(j, 1);
+        fireCheck = false;
+        break;
+      } //distance of < 1 is fire
+    }
+    if (fireCheck && fires[i].fireContainer.getZ() < -10){ //when far away 
+      fires[i].delete();
+      fires.splice(i,1);
+    }
+  }
+  for (var i =0; i<ices.length;i++){
+    ices[i].iceContainer.setZ(ices[i].iceContainer.getZ() - .06);
+    // ices[i].iceContainer.setY(ices[i].iceContainer.getY() + .04);
+    var iceArr = ices[i].iceContainer.getChildren();
+    for (var j=0;j<iceArr.length; j++){
+      iceArr[j].spinZ(2);
+    }
+    var iceCheck = true;
+    for (var j =0; j<pokeballs.length; j++){
+      if (dist(pokeballs[j].pokeball.x, pokeballs[j].pokeball.y, pokeballs[j].pokeball.z, ices[i].ice.x, ices[i].ice.y, ices[i].ice.z) <.8){
+        //if collision, delete projectile and pokeball
+        ices[i].delete();
+        ices.splice(i,1);
+        pokeballs[j].delete();
+        pokeballs.splice(j, 1);
+        iceCheck = false;
+        break;
+      } //distance of < 1 is ice
+    }
 
     if (iceCheck && ices[i].iceContainer.getZ() < -10){
       ices[i].delete();
@@ -324,7 +312,8 @@ function play(){
 }
 
 function endScreen(){
-	world.add(endPlane);
+	hand1.hide();
+	hand2.hide();
 }
 var hx1, hy2, hz1, hx2, hy2, hz2;
 
@@ -523,6 +512,12 @@ function Pokeball(x,y,z) {
 			return "gone";
 		}
   }
+
+  function isCollision(){
+		if(dist(this.pokeball.x, hy1)<1 && dist(this.pokeball.y, hy1)<1 && dist(this.pokeball.z, hz1)<1){
+			console.log("collided!");
+		}
+	}
 }
 
 function Fireball(x,y,z){

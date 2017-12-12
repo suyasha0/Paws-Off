@@ -92,10 +92,26 @@ function setup() {
   });
   world.add(startPlane);
   // pokeballs.push(new Pokeball(0.35, .95, 4.45)); // basically close enough to hit user
-  // // new Pokeball(0.35, .95, 4.45) corresponds to x:0.4, y:0, z:-0.5,
+  // new Pokeball(0.35, .95, 4.45) corresponds to x:0.4, y:0, z:-0.5,
 
   // pokeballs.push(new Pokeball(-0.1, .95, 4.45));  //essentially corresponds x:-0.1, y:0, z:-0.5
 //smaller pokeball z means farther away, bigger pokbal is closer 
+
+  // lightnings.push(new LightningBolt(0,1,2.6)); //greater z is closer to user
+  //  console.log("DISTANCE Right",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, lightnings[0].lightningBolt.x, lightnings[0].lightningBolt.y, lightnings[0].lightningBolt.z));
+  // // distance of 2 or less seems good FOR LIGHTNING
+
+  // ices.push(new Ice(0,1,6));
+  // console.log("DISTANCE Right",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, ices[0].ice.x, ices[0].ice.y, ices[0].ice.z));
+  // //distance of < 1.7 seems good for ice
+
+
+  // fires.push(new Fireball(0,1,3.8));
+  // console.log("DISTANCE Right",dist(pokeballs[0].pokeball.x, pokeballs[0].pokeball.y, pokeballs[0].pokeball.z, fires[0].fire.x, fires[0].fire.y, fires[0].fire.z)); //distance of < 1.7 seems good for ice
+  // //distance for fire seems < 1
+  // ices.push(new Ice());
+  //world.add(Fireball());
+
   // pokeballs.push(new Pokeball(0.15, .95, 4.7));
   // var temp = new Pokeball(-.15, .95, 4.9); // basically close enough to hit user 
   // console.log("WORLD",world.getUserPosition().x);
@@ -124,9 +140,7 @@ function setup() {
   //   // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
   // }
   
-  // lightnings.push(new LightningBolt());
-  // ices.push(new Ice());
-  //world.add(Fireball());
+
  
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
@@ -202,7 +216,7 @@ function play(){
         i-=1;
       } 
     } 
-	}
+  }
 	//console.log(world.getUserPosition());
 	if (z>=5){zRot = false;}
 	if (z<=-5){zRot = true;}
@@ -214,11 +228,34 @@ function play(){
     for (var j=0;j<fireArr.length; j++){
       fireArr[j].rotateZ(z);
     }
-    if (fires[i].fireContainer.getZ() < -10){
+    var fireCheck = true;
+    for (var j =0; j<pokeballs.length; j++){
+      if (dist(pokeballs[j].pokeball.x, pokeballs[j].pokeball.y, pokeballs[j].pokeball.z, fires[i].fire.x, fires[i].fire.y, fires[i].fire.z) <.5){
+        //if collision, delete projectile and pokeball
+        fires[i].delete();
+        fires.splice(i,1);
+        pokeballs[j].delete();
+        pokeballs.splice(j, 1);
+        fireCheck = false;
+        break;
+      } //distance of < 1 is fire
+    }
+    if (fireCheck && fires[i].fireContainer.getZ() < -10){ //when far away 
       fires[i].delete();
       fires.splice(i,1);
     }
   }
+  // lightnings.push(new LightningBolt(0,1,2.6)); //greater z is closer to user
+  //  console.log("DISTANCE Right",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, lightnings[0].lightningBolt.x, lightnings[0].lightningBolt.y, lightnings[0].lightningBolt.z));
+  // // distance of 2 or less seems good FOR LIGHTNING
+
+  // ices.push(new Ice(0,1,6));
+  // console.log("DISTANCE Right",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, ices[0].ice.x, ices[0].ice.y, ices[0].ice.z));
+  // //distance of < 1.7 seems good for ice
+
+  // fires.push(new Fireball(0,1,3.8));
+  // console.log("DISTANCE Right",dist(pokeballs[0].pokeball.x, pokeballs[0].pokeball.y, pokeballs[0].pokeball.z, fires[0].fire.x, fires[0].fire.y, fires[0].fire.z)); //distance of < 1.7 seems good for ice
+  // //distance for fire seems < 1
   for (var i =0; i<ices.length;i++){
     ices[i].iceContainer.setZ(ices[i].iceContainer.getZ() - .06);
     // ices[i].iceContainer.setY(ices[i].iceContainer.getY() + .04);
@@ -226,7 +263,20 @@ function play(){
     for (var j=0;j<iceArr.length; j++){
       iceArr[j].spinZ(2);
     }
-    if (ices[i].iceContainer.getZ() < -10){
+    var iceCheck = true;
+    for (var j =0; j<pokeballs.length; j++){
+      if (dist(pokeballs[j].pokeball.x, pokeballs[j].pokeball.y, pokeballs[j].pokeball.z, ices[i].ice.x, ices[i].ice.y, ices[i].ice.z) <.8){
+        //if collision, delete projectile and pokeball
+        ices[i].delete();
+        ices.splice(i,1);
+        pokeballs[j].delete();
+        pokeballs.splice(j, 1);
+        iceCheck = false;
+        break;
+      } //distance of < 1 is ice
+    }
+
+    if (iceCheck && ices[i].iceContainer.getZ() < -10){
       ices[i].delete();
       ices.splice(i,1);
     }
@@ -238,7 +288,19 @@ function play(){
     for (var j=0;j<lightningArr.length; j++){
       lightningArr[j].spinZ(4);
     }
-    if (lightnings[i].lightningContainer.getZ() < -10){
+    var lightningCheck = true;
+    for (var j =0; j<pokeballs.length; j++){
+      if (dist(pokeballs[j].pokeball.x, pokeballs[j].pokeball.y, pokeballs[j].pokeball.z, lightnings[i].lightningBolt.x, lightnings[i].lightningBolt.y, lightnings[i].lightningBolt.z) <.9){
+        //if collision, delete projectile and pokeball
+        lightnings[i].delete();
+        lightnings.splice(i,1);
+        pokeballs[j].delete();
+        pokeballs.splice(j, 1);
+        lightningCheck = false;
+        break;
+      } //distance of < 1 is lightning
+    }
+    if (lightningCheck && lightnings[i].lightningContainer.getZ() < -10){
       lightnings[i].delete();
       lightnings.splice(i,1);
     }
@@ -497,9 +559,9 @@ function Ice(x,y,z){
     z: z,
     rotationX:180,
     rotationY:0,
-    scaleX:.4,
-    scaleY:.4,
-    scaleZ:.4,
+    scaleX:.3,
+    scaleY:.3,
+    scaleZ:.3,
   });
   this.iceContainer.addChild(this.ice);
   world.add(this.iceContainer);

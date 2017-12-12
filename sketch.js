@@ -6,6 +6,11 @@ var hand1, hand2;
 var x1; var y1; var x2; var y2;
 
 var health = 5;
+var losePlane;var winPlane;
+var gameLost = true;
+var gameWon = true;
+var grassHeight = 100;
+var mewtwo;
 
 //global ground to move in draw
 var g;
@@ -72,7 +77,7 @@ function setup() {
     y: 0,
     z: 0,
     width: 100,
-    height: 1000,
+    height: grassHeight,
     asset: 'grass',
     repeatX: 100, //width
     repeatY: 1000, //length of plane ground
@@ -81,6 +86,20 @@ function setup() {
   });
  // add the plane to our world
   world.add(g);
+
+  mewtwo = new OBJ({
+    asset: 'mewtwo_obj',
+    mtl: 'mewtwo_mtl',
+    x: 0.4,
+    y: 1.6,
+    z: 5-grassHeight,
+    rotationX:90,
+    // rotationZ: -20,
+    scaleX:.2,
+    scaleY:.2,
+    scaleZ:.2,
+  });
+  world.add(mewtwo);
 
   startPlane = new Plane({
     x: 0,
@@ -91,36 +110,29 @@ function setup() {
     asset: 'startscreen'
   });
   world.add(startPlane);
- 
-  // pokeballs.push(new Pokeball(0.35, .95, 4.45)); // basically close enough to hit user
-  // new Pokeball(0.35, .95, 4.45) corresponds to x:0.4, y:0, z:-0.5,
 
-  // pokeballs.push(new Pokeball(-0.1, .95, 4.45));  //essentially corresponds x:-0.1, y:0, z:-0.5
-//smaller pokeball z means farther away, bigger pokbal is closer 
-
-  // lightnings.push(new LightningBolt(0,1,2.6)); //greater z is closer to user
-  //  console.log("DISTANCE Right",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, lightnings[0].lightningBolt.x, lightnings[0].lightningBolt.y, lightnings[0].lightningBolt.z));
-  // // distance of 2 or less seems good FOR LIGHTNING
-
-  // ices.push(new Ice(0,1,6));
-  // console.log("DISTANCE Right",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, ices[0].ice.x, ices[0].ice.y, ices[0].ice.z));
-  // //distance of < 1.7 seems good for ice
-
-  // fires.push(new Fireball(0,1,3.8));
-  // console.log("DISTANCE Right",dist(pokeballs[0].pokeball.x, pokeballs[0].pokeball.y, pokeballs[0].pokeball.z, fires[0].fire.x, fires[0].fire.y, fires[0].fire.z)); //distance of < 1.7 seems good for ice
-  // //distance for fire seems < 1
-
-  //  for (var i =0; i<pokeballs.length; i++){
-  //   if (dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5)<.16){
-  //     pokeballs[i].delete();
-  //     pokeballs.splice(i, 1);
-  //   }
-  //   if (dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand2.x, hand2.y+.95, hand2.z+5)<.16){
-  //     pokeballs[i].delete();
-  //     pokeballs.splice(i, 1);
-  //   }
-  //  }
-  // console.log("hand right", hand2.x, hand2.y+.95, hand2.z+5);
+  losePlane = new Plane({
+    x: 0,
+    y: 3.2,
+    z: 4.8,
+    width: 30,
+    height: 19,
+    red:0,
+    green:0,
+    blue:0,
+    // asset: 'startscreen'
+  });
+  winPlane = new Plane({
+    x: 0,
+    y: 3.2,
+    z: 4.8,
+    width: 30,
+    height: 19,
+    red:255,
+    green:255,
+    blue:255,
+    // asset: 'startscreen'
+  });
  
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
@@ -140,8 +152,24 @@ function draw() {
     // play();// TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
   } else if(gameMode==1){    
   	play();
+  } else if(gameMode==2){
+    endScreen();
+    if (gameLost){
+      world.add(losePlane);
+      gameLost = false;
+    }
   } else{
-  	endScreen();
+    if (gameWon){
+      endScreen();
+      world.add(winPlane);
+      gameWon = false;
+    }
+  }
+  if (health <=0){
+    gameMode = 2;
+  }
+  if (g.getZ() >= g.height/2 +4){ //ending game
+    gameMode = 3;
   }
   if (z>=10){ zRot = false;}
   if (z<=-10){ zRot = true;}
@@ -158,7 +186,10 @@ function startScreen(){
 
 function play(){
 	//make ground move forward **commenting this because im getting dizzy testing.
-  g.setZ(g.getZ()+.05);      
+  g.setZ(g.getZ()+.05);   
+  mewtwo.setZ(mewtwo.getZ()+.09);   
+  console.log("G",g.getZ()) ;
+  console.log("mewtwo",mewtwo.getZ()) ;
   framectr+=1;
   if (framectr%30 ==0){
     var temp = new Pokeball(random(-4, 4), .95, 2);

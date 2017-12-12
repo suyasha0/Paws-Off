@@ -46,7 +46,7 @@ function setup() {
   hand1 = new OBJ({
     asset: 'paw_obj',
     mtl: 'paw_mtl',
-    x: -0.3,
+    x: -0.4,
     y: -0,
     z: -0.5,
     rotationX:-90,
@@ -91,6 +91,18 @@ function setup() {
     asset: 'startscreen'
   });
   world.add(startPlane);
+
+  // var test = new Box({
+  //   x:0,
+  //   y:2,
+  //   z:5,
+  //   width:.5,
+  //   height:.5,
+  //   depth:.5,
+  //   red:255,
+  // })
+  // world.add(test);
+ 
   // pokeballs.push(new Pokeball(0.35, .95, 4.45)); // basically close enough to hit user
   // new Pokeball(0.35, .95, 4.45) corresponds to x:0.4, y:0, z:-0.5,
 
@@ -132,21 +144,17 @@ function setup() {
   //     pokeballs[i].delete();
   //     pokeballs.splice(i, 1);
   //   }
-
   //  }
-
   // console.log("hand right", hand2.x, hand2.y+.95, hand2.z+5);
    // if(dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y)<.2){
   //   // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
   // }
-  
-
  
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
   
-  // world.setUserPosition(0, 10, 5); //TESTING PURPOSES
+  // world.setUserPosition(0, 5, 5); //TESTING PURPOSES
   //HEREEEEEEEEEEEEEEEEEEEEEE
 }
 
@@ -189,7 +197,11 @@ function play(){
 		var result = pokeballs[i].move();
     // console.log("DISTANCE",dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, world.getUserPosition().x, world.getUserPosition().y, world.getUserPosition().z));
     var check = true;
-    if (dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5)<.16){
+    if (result =="gone"){
+      pokeballs.splice(i, 1);
+      check = false;
+    }
+    if (check && dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5)<.16){
       pokeballs[i].delete();
       pokeballs.splice(i, 1);
       check = false;
@@ -245,17 +257,6 @@ function play(){
       fires.splice(i,1);
     }
   }
-  // lightnings.push(new LightningBolt(0,1,2.6)); //greater z is closer to user
-  //  console.log("DISTANCE Right",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, lightnings[0].lightningBolt.x, lightnings[0].lightningBolt.y, lightnings[0].lightningBolt.z));
-  // // distance of 2 or less seems good FOR LIGHTNING
-
-  // ices.push(new Ice(0,1,6));
-  // console.log("DISTANCE Right",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, ices[0].ice.x, ices[0].ice.y, ices[0].ice.z));
-  // //distance of < 1.7 seems good for ice
-
-  // fires.push(new Fireball(0,1,3.8));
-  // console.log("DISTANCE Right",dist(pokeballs[0].pokeball.x, pokeballs[0].pokeball.y, pokeballs[0].pokeball.z, fires[0].fire.x, fires[0].fire.y, fires[0].fire.z)); //distance of < 1.7 seems good for ice
-  // //distance for fire seems < 1
   for (var i =0; i<ices.length;i++){
     ices[i].iceContainer.setZ(ices[i].iceContainer.getZ() - .06);
     // ices[i].iceContainer.setY(ices[i].iceContainer.getY() + .04);
@@ -468,25 +469,51 @@ function Pokeball(x,y,z) {
   }
 	this.move = function(){
     this.pokeball.nudge(0, 0, .03);
-    //WE CAN DO WAY MORE MATH TO MAKE IT LOOK BETTER IN TERMS OF HITTING U
-
-		if(this.bool && this.pokeball.x< -.1){
+		if(this.bool && this.pokeball.x< -3.5){
+      this.x =.035;
+      this.bool = false;
+    } else if(this.bool && this.pokeball.x< -3){
       this.x =.03;
       this.bool = false;
-		}
-		else if(this.bool && this.pokeball.x>.1){
+    }else if(this.bool && this.pokeball.x< -2.5){
+      this.x =.025;
+      this.bool = false;
+    }else if(this.bool && this.pokeball.x< -2){
+      this.x =.02;
+      this.bool = false;
+    }else if(this.bool && this.pokeball.x< -1.5){
+      this.x =.015;
+      this.bool = false;
+    }else if(this.bool && this.pokeball.x< -1){
+      this.x =.01;
+      this.bool = false;
+    }else if(this.bool && this.pokeball.x< -.5){
+      this.x =.005;
+      this.bool = false;
+    } 
+    else if(this.bool && this.pokeball.x>3.5){
+      this.x=-.035;
+      this.bool = false;
+    }else if(this.bool && this.pokeball.x>3){
       this.x=-.03;
+      this.bool = false;
+    }else if(this.bool && this.pokeball.x>2.5){
+      this.x=-.025;
+      this.bool = false;
+    }else if(this.bool && this.pokeball.x>2){
+      this.x=-.02;
+      this.bool = false;
+    }else if(this.bool && this.pokeball.x>1.5){
+      this.x=-.015;
+      this.bool = false;
+    }else if(this.bool && this.pokeball.x>1){
+      this.x=-.01;
+      this.bool = false;
+    }else if(this.bool && this.pokeball.x>.5){
+      this.x=-.005;
       this.bool = false;
     }
     this.pokeball.nudge(this.x, 0, 0);
-    // else{
-    //   if (this.direction=="r"){
-    //     var xMovement = map( noise(this.xNoiseOffset), 0, 1, -.03, 0 );
-    //   }else{
-    //     var xMovement = map( noise(this.xNoiseOffset), 0, 1, 0, 0.3 );
-    //   }
-    //   this.pokeball.nudge(xMovement, 0, 0);
-    // }
 		if(this.pokeball.z>5){
 			world.remove(this.pokeball);
 			return "gone";

@@ -34,6 +34,13 @@ var pokeballs = [];
 var pokeball;
 // 0 : startscreen, 1 : play, -1 : endscreen
 var gameMode = -1;
+
+function preload(){
+	music = loadSound("./sounds/easy.mp3");
+	shootSound = loadSound("./sounds/blip.mp3");
+	hitSound = loadSound("./sounds/fail.mp3");
+}
+
 function setup() {
   // no canvas needed
   noCanvas();
@@ -210,11 +217,13 @@ function play(){
 	    }
 	    if (check && dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5)<.16){
 	      pokeballs[i].delete();
+	      blipSound.play();
 	      pokeballs.splice(i, 1);
 	      check = false;
 	    }
 	    if (check && dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand2.x, hand2.y+.95, hand2.z+5)<.16){
 	      pokeballs[i].delete();
+	      blipSound.play();
 	      pokeballs.splice(i, 1);
 	      check = false;
 	    } //hand checking
@@ -224,6 +233,7 @@ function play(){
 	        //distance for pokeball close enough to user
 	        pokeballs[i].delete();
 	        pokeballs.splice(i, 1);
+	        hitSound.play();
 	        health -=1;
 	        // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
 	      }
@@ -250,6 +260,7 @@ function play(){
 	    //if collision, delete projectile and pokeball
 	    fires[i].delete();
 	    fires.splice(i,1);
+	    shootSound.play();
 	    pokeballs[j].delete();
 	    pokeballs.splice(j, 1);
 	    fireCheck = false;

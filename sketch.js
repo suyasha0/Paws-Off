@@ -91,10 +91,10 @@ function setup() {
     asset: 'startscreen'
   });
   world.add(startPlane);
-  pokeballs.push(new Pokeball(0.35, .95, 4.45)); // basically close enough to hit user
-  // new Pokeball(0.35, .95, 4.45) corresponds to x:0.4, y:0, z:-0.5,
+  // pokeballs.push(new Pokeball(0.35, .95, 4.45)); // basically close enough to hit user
+  // // new Pokeball(0.35, .95, 4.45) corresponds to x:0.4, y:0, z:-0.5,
 
-  pokeballs.push(new Pokeball(-0.1, .95, 4.45));  //essentially corresponds x:-0.1, y:0, z:-0.5
+  // pokeballs.push(new Pokeball(-0.1, .95, 4.45));  //essentially corresponds x:-0.1, y:0, z:-0.5
 //smaller pokeball z means farther away, bigger pokbal is closer 
   // pokeballs.push(new Pokeball(0.15, .95, 4.7));
   // var temp = new Pokeball(-.15, .95, 4.9); // basically close enough to hit user 
@@ -103,11 +103,23 @@ function setup() {
   // console.log("WORDL2", temp.pokeball.x);
   // console.log("WORLD",world.getUserPosition().y);
   // console.log("WORDL2", temp.pokeball.y);
-   console.log("DISTANCE Right",dist(pokeballs[0].pokeball.x, pokeballs[0].pokeball.y, pokeballs[0].pokeball.z, hand2.x, hand2.y+.95, hand2.z+5));
-   //lets have distance be < .16 
-   console.log("DISTANCE Left",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5));
+  //  console.log("DISTANCE Right",dist(pokeballs[0].pokeball.x, pokeballs[0].pokeball.y, pokeballs[0].pokeball.z, hand2.x, hand2.y+.95, hand2.z+5));
+  //  //lets have distance be < .16 
+  //  console.log("DISTANCE Left",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5));
    
-   console.log("hand right", hand2.x, hand2.y+.95, hand2.z+5);
+  //  for (var i =0; i<pokeballs.length; i++){
+  //   if (dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5)<.16){
+  //     pokeballs[i].delete();
+  //     pokeballs.splice(i, 1);
+  //   }
+  //   if (dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand2.x, hand2.y+.95, hand2.z+5)<.16){
+  //     pokeballs[i].delete();
+  //     pokeballs.splice(i, 1);
+  //   }
+
+  //  }
+
+  // console.log("hand right", hand2.x, hand2.y+.95, hand2.z+5);
    // if(dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y)<.2){
   //   // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
   // }
@@ -162,17 +174,33 @@ function play(){
 	for (var i = 0; i < pokeballs.length; i++) {
 		var result = pokeballs[i].move();
     // console.log("DISTANCE",dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, world.getUserPosition().x, world.getUserPosition().y, world.getUserPosition().z));
-    if(dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, world.getUserPosition().x, world.getUserPosition().y, world.getUserPosition().z)<.18){
-      //distance for pokeball close enough to user
+    var check = true;
+    if (dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5)<.16){
       pokeballs[i].delete();
       pokeballs.splice(i, 1);
-      health -=1;
-      console.log("DELETED", health);
-      // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
+      check = false;
+      console.log("LEFT HAND I THINK??");
     }
-    else if (result == "gone") {
-			pokeballs.splice(i, 1);
-			i-=1;
+    if (check && dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand2.x, hand2.y+.95, hand2.z+5)<.16){
+      pokeballs[i].delete();
+      pokeballs.splice(i, 1);
+      check = false;
+      console.log("RIGHT HAND I THINK??");
+    } //hand checking
+    
+    if (check){ //if no delete then check for health/behind u
+      if(dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, world.getUserPosition().x, world.getUserPosition().y, world.getUserPosition().z)<.18){
+        //distance for pokeball close enough to user
+        pokeballs[i].delete();
+        pokeballs.splice(i, 1);
+        health -=1;
+        console.log("DELETED", health);
+        // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
+      }
+      else if (result == "gone") {
+        pokeballs.splice(i, 1);
+        i-=1;
+      } 
     } 
 	}
 	//console.log(world.getUserPosition());

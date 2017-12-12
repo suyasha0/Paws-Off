@@ -5,8 +5,8 @@ var leapController;
 var hand1, hand2;
 var x1; var y1; var x2; var y2;
 
-var health = 5;
-var losePlane;var winPlane;
+var health = 5; //TEST
+var losePlane;var winPlane; var loseScreen;
 var gameLost = true;
 var gameWon = true;
 var grassHeight = 200;
@@ -34,6 +34,13 @@ var pokeballs = [];
 var pokeball;
 // 0 : startscreen, 1 : play, -1 : endscreen
 var gameMode = 0;
+
+// function preload(){
+// 	music = loadSound("./sounds/easy.mp3");
+// 	shootSound = loadSound("./sounds/blip.mp3");
+// 	hitSound = loadSound("./sounds/fail.mp3");
+// }
+
 function setup() {
   // no canvas needed
   noCanvas();
@@ -107,7 +114,7 @@ function setup() {
     z: -1,
     width: 19,
     height: 19,
-    asset: 'startscreen'
+    asset: 'startscreen2'
   });
   world.add(startPlane);
 
@@ -120,8 +127,18 @@ function setup() {
     red:0,
     green:0,
     blue:0,
-    // asset: 'startscreen'
+    // asset: 'losescreen'
   });
+
+  loseScreen = new Plane({
+    x: 0,
+    y: 1,
+    z: 4.81,
+    width: 2,
+    height: 2,
+    asset: 'losescreen'
+  })
+
   winPlane = new Plane({
     x: 0,
     y: 3.2,
@@ -131,7 +148,6 @@ function setup() {
     red:255,
     green:255,
     blue:255,
-    // asset: 'startscreen'
   });
  
   // add the hands to our camera - this will force it to always show up on the user's display
@@ -156,6 +172,7 @@ function draw() {
     endScreen();
     if (gameLost){
       world.add(losePlane);
+      world.add(loseScreen);
       gameLost = false;
     }
   } else{
@@ -175,7 +192,6 @@ function draw() {
   if (z<=-10){ zRot = true;}
   if (zRot){ z+=2;}
   else{ z-=2;}
-
   y+=1;
 }
 

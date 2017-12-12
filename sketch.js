@@ -117,10 +117,10 @@ function setup() {
     z: 4.8,
     width: 30,
     height: 19,
-    red:0,
-    green:0,
-    blue:0,
-    // asset: 'startscreen'
+    // red:0,
+    // green:0,
+    // blue:0,
+    asset: 'endscreen'
   });
   winPlane = new Plane({
     x: 0,

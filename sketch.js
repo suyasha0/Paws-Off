@@ -46,25 +46,25 @@ function setup() {
   hand1 = new OBJ({
     asset: 'paw_obj',
     mtl: 'paw_mtl',
-    x: -0.5,
-    y: 0,
-    z: -1,
+    x: -0.3,
+    y: -0,
+    z: -0.5,
     rotationX:-90,
-    scaleX:.1,
-    scaleY:.1,
-    scaleZ:.1,
+    scaleX:.05,
+    scaleY:.05,
+    scaleZ:.05,
    });
   
   hand2 = new OBJ({
     asset: 'paw_obj',
     mtl: 'paw_mtl',
-    x: 0.5,
-    y: 0,
-    z: -1,
+    x: 0.4,
+    y: 0.0,
+    z: -0.5,
     rotationX:-90,
-    scaleX:.1,
-    scaleY:.1,
-    scaleZ:.1,
+    scaleX:.05,
+    scaleY:.05,
+    scaleZ:.05,
   });
 
   g = new Plane({
@@ -91,7 +91,11 @@ function setup() {
     asset: 'startscreen'
   });
   world.add(startPlane);
-  // pokeballs.push(new Pokeball(0.15, .95, 4.9)); // basically close enough to hit user 
+  pokeballs.push(new Pokeball(0.35, .95, 4.45)); // basically close enough to hit user
+  // new Pokeball(0.35, .95, 4.45) corresponds to x:0.4, y:0, z:-0.5,
+
+  pokeballs.push(new Pokeball(-0.1, .95, 4.45));  //essentially corresponds x:-0.1, y:0, z:-0.5
+//smaller pokeball z means farther away, bigger pokbal is closer 
   // pokeballs.push(new Pokeball(0.15, .95, 4.7));
   // var temp = new Pokeball(-.15, .95, 4.9); // basically close enough to hit user 
   // console.log("WORLD",world.getUserPosition().x);
@@ -99,8 +103,12 @@ function setup() {
   // console.log("WORDL2", temp.pokeball.x);
   // console.log("WORLD",world.getUserPosition().y);
   // console.log("WORDL2", temp.pokeball.y);
-  //  console.log("DISTANCE",dist(temp.pokeball.x,temp.pokeball.y,temp.pokeball.z, world.getUserPosition().x,world.getUserPosition().y, world.getUserPosition().z));
-  // if(dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y)<.2){
+   console.log("DISTANCE Right",dist(pokeballs[0].pokeball.x, pokeballs[0].pokeball.y, pokeballs[0].pokeball.z, hand2.x, hand2.y+.95, hand2.z+5));
+   //lets have distance be < .16 
+   console.log("DISTANCE Left",dist(pokeballs[1].pokeball.x, pokeballs[1].pokeball.y, pokeballs[1].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5));
+   
+   console.log("hand right", hand2.x, hand2.y+.95, hand2.z+5);
+   // if(dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y)<.2){
   //   // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
   // }
   
@@ -111,6 +119,7 @@ function setup() {
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
   world.camera.holder.appendChild(hand2.tag);
+  
   // world.setUserPosition(0, 10, 5); //TESTING PURPOSES
   //HEREEEEEEEEEEEEEEEEEEEEEE
 }
@@ -134,25 +143,6 @@ function draw() {
   else{ z-=2;}
 
   y+=1;
- 
- // fire.rotateZ(z);
-  //lightningBolt.rotateY(y);
-  //moving lightning away kinda
-  // lightningContainer.setZ(lightningContainer.getZ() - .05);
-  // lightningContainer.setY(lightningContainer.getY() + .02);
-  // var pos = world.getUserPosition(); 
-  //   // now evaluate
-  // if (pos.x > 47) { //width of plane, looks good when comes to edge
-  //   world.setUserPosition(47, pos.y, pos.z);
-  // } else if (pos.x < -47) {
-  //   world.setUserPosition(-47, pos.y, pos.z);
-  // }
-  // //have above just blcok u from going off side 
-  // if (pos.z > 500) { //if it goes past the length
-  //   world.setUserPosition(pos.x, pos.y, -500);
-  // } else if (pos.z < -500) {
-  //   world.setUserPosition(pos.x, pos.y, 500);
-  // }
 }
 
 function startScreen(){
@@ -270,12 +260,12 @@ function handleHandData(frame) {
     // let's map the x & y values to screen coordinates
     // note that determining the correct values for your application takes some trial and error!
 
-  x1 = map(hx1, -200, 200, -1, 0.5);
-  y1 = map(hy1, 0, 500, -1, 2);
+  x1 = map(hx1, -200, 200, -0.5, 0.1);
+  y1 = map(hy1, 0, 500, -0.5, 0.4);
   //var z1 = map(hz1, -200, 200, -1, 2);
 
-  x2 = map(hx2, -200, 200, -0.5, 1);
-  y2 = map(hy2, 0, 500, -1, 2);
+  x2 = map(hx2, -200, 200, -0.1, 0.5);
+  y2 = map(hy2, 0, 500, -0.5, 0.4);
   //var z2 = map(hz1, -200, 200, -1, 2);
 
     // OK, now we have two hands ... let's use this information to draw a visual representation

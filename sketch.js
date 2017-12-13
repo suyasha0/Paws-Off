@@ -33,7 +33,7 @@ var lightningBolt, fire;
 var pokeballs = [];
 var pokeball;
 // 0 : startscreen, 1 : play, -1 : endscreen
-var gameMode = 1;
+var gameMode = 0;
 var music, shootSound, shootSoundS, shootSoundC, hitSound, end;
 
 function preload(){

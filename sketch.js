@@ -33,13 +33,18 @@ var lightningBolt, fire;
 var pokeballs = [];
 var pokeball;
 // 0 : startscreen, 1 : play, -1 : endscreen
-var gameMode = 0;
+var gameMode = 1;
+var music, shootSound, shootSoundS, shootSoundC, hitSound, end;
 
-// function preload(){
-// 	music = loadSound("./sounds/easy.mp3");
-// 	shootSound = loadSound("./sounds/blip.mp3");
-// 	hitSound = loadSound("./sounds/fail.mp3");
-// }
+function preload(){
+	music = loadSound("./sounds/easy.mp3");
+  blockSound = loadSound("./sounds/blip.mp3");
+  shootSound = loadSound("./sounds/kachu.mp3");
+  shootSoundS = loadSound("./sounds/squirtle.mp3");
+  shootSoundC = loadSound("./sounds/char.mp3");
+	hitSound = loadSound("./sounds/fail.mp3");
+  endSound = loadSound("./sounds/end.mp3");
+}
 
 function setup() {
   // no canvas needed
@@ -156,6 +161,9 @@ function setup() {
   
   // world.setUserPosition(0, 5, 5); //TESTING PURPOSES
   //HEREEEEEEEEEEEEEEEEEEEEEE
+  music.setVolume(.7);
+  hitSound.setVolume(1);
+  blockSound.setVolume(.7);
 }
 
 function draw() {
@@ -165,7 +173,6 @@ function draw() {
   }
   if(gameMode==0){
     startScreen();
-    // play();// TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
   } else if(gameMode==1){    
   	play();
   } else if(gameMode==2){
@@ -173,6 +180,7 @@ function draw() {
     if (gameLost){
       world.add(losePlane);
       world.add(loseScreen);
+      endSound.play();
       gameLost = false;
     }
   } else{
@@ -201,7 +209,11 @@ function startScreen(){
 }
 
 function play(){
-	//make ground move forward **commenting this because im getting dizzy testing.
+	
+  if(!music.isPlaying()){
+    music.play();
+  }
+
   g.setZ(g.getZ()+.05);   
   mewtwo.setZ(mewtwo.getZ()+.092);   
   console.log("G",g.getZ()) ;
@@ -223,12 +235,14 @@ function play(){
     if (check && dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand1.x, hand1.y+.95, hand1.z+5)<.16){
       pokeballs[i].delete();
       pokeballs.splice(i, 1);
+      blockSound.play();
       check = false;
       console.log("LEFT HAND I THINK??");
     }
     if (check && dist(pokeballs[i].pokeball.x, pokeballs[i].pokeball.y, pokeballs[i].pokeball.z, hand2.x, hand2.y+.95, hand2.z+5)<.16){
       pokeballs[i].delete();
       pokeballs.splice(i, 1);
+      blockSound.play();
       check = false;
       console.log("RIGHT HAND I THINK??");
     } //hand checking
@@ -238,6 +252,7 @@ function play(){
         //distance for pokeball close enough to user
         pokeballs[i].delete();
         pokeballs.splice(i, 1);
+        hitSound.play();
         health -=1;
         console.log("DELETED", health);
         // console.log("distance!!!",dist(temp.pokeball.z,temp.pokeball.y, world.getUserPosition().z, world.getUserPosition().y));
@@ -330,7 +345,12 @@ function play(){
 function endScreen(){
 	hand1.hide();
 	hand2.hide();
+
+  if(music.isPlaying()){
+    music.stop();
+  }
 }
+
 var hx1, hy2, hz1, hx2, hy2, hz2;
 
 function handleHandData(frame) {
@@ -427,27 +447,33 @@ function handleHandData(frame) {
           if (hand.stabilizedPalmPosition[0] == leftHandX){ //left
             console.log("LEFT");
             if (projectile%3==0){
-              fires.push(new Fireball(x1-.5,.95,fz));            
+              fires.push(new Fireball(x1-.5,.95,fz));   
+              char.play();         
               fy+=0.5;
               projectile+=1;
             } else if (projectile%3==1){
               lightnings.push(new LightningBolt(x1-.5,.95,lz));
+              shootSound.play();
               projectile+=1;
             } else{
               ices.push(new Ice(x1-.5,.95,iz));
+              squirtle.play();
               projectile+=1;
             }
           } else { //right?
             console.log("RIGHT");
             if (projectile%3==0){
-              fires.push(new Fireball(x2+.5,.95,fz));            
+              fires.push(new Fireball(x2+.5,.95,fz));   
+              char.play();          
               fy+=0.5;
               projectile+=1;
             } else if (projectile%3==1){
               lightnings.push(new LightningBolt(x2+.5,.95,lz));
+              shootSound.play();
               projectile+=1;
             } else{
               ices.push(new Ice(x2+.5,.95,iz));
+              squirtle.play();
               projectile+=1;
             }
           }

@@ -6,7 +6,7 @@ var hand1, hand2;
 var x1; var y1; var x2; var y2;
 
 var health = 5; //TEST
-var losePlane;var winPlane; var loseScreen;
+var losePlane;var winPlane; var loseScreen; var winScreen;
 var gameLost = true;
 var gameWon = true;
 var grassHeight = 200;
@@ -142,7 +142,7 @@ function setup() {
     width: 2,
     height: 2,
     asset: 'losescreen'
-  })
+  });
 
   winPlane = new Plane({
     x: 0,
@@ -154,6 +154,15 @@ function setup() {
     green:255,
     blue:255,
   });
+
+  winScreen = new Plane({
+    x: 0,
+    y: 1,
+    z: 4.81,
+    width: 2,
+    height: 2,
+    asset: 'winscreen'
+  })
  
   // add the hands to our camera - this will force it to always show up on the user's display
   world.camera.holder.appendChild(hand1.tag);
@@ -187,6 +196,7 @@ function draw() {
     if (gameWon){
       endScreen();
       world.add(winPlane);
+      world.add(winScreen);
       gameWon = false;
     }
   }

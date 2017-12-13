@@ -39,7 +39,7 @@ var music, shootSound, shootSoundS, shootSoundC, hitSound, end;
 function preload(){
 	music = loadSound("./sounds/easy.mp3");
   blockSound = loadSound("./sounds/blip.mp3");
-  shootSound = loadSound("./sounds/kachu.mp3");
+  shootSoundK = loadSound("./sounds/kachu.mp3");
   shootSoundS = loadSound("./sounds/squirtle.mp3");
   shootSoundC = loadSound("./sounds/char.mp3");
 	hitSound = loadSound("./sounds/fail.mp3");
@@ -216,8 +216,8 @@ function play(){
 
   g.setZ(g.getZ()+.05);   
   mewtwo.setZ(mewtwo.getZ()+.092);   
-  console.log("G",g.getZ()) ;
-  console.log("mewtwo",mewtwo.getZ()) ;
+  // console.log("G",g.getZ()) ;
+  // console.log("mewtwo",mewtwo.getZ()) ;
   framectr+=1;
   if (framectr%30 ==0){
     var temp = new Pokeball(random(-4, 4), .95, 2);
@@ -438,43 +438,45 @@ function handleHandData(frame) {
           handIds.forEach(function(handId){
             hand = frame.hand(handId);
           });
-          var leftHandX = frame.hands[1].stabilizedPalmPosition[0];
-          var rightHandX = frame.hands[0].stabilizedPalmPosition[0];
-          if (leftHandX > rightHandX){
-            leftHandX = frame.hands[0].stabilizedPalmPosition[0];
-            rightHandX = frame.hands[1].stabilizedPalmPosition[0];
-          }
-          if (hand.stabilizedPalmPosition[0] == leftHandX){ //left
-            console.log("LEFT");
-            if (projectile%3==0){
-              fires.push(new Fireball(x1-.5,.95,fz));   
-              char.play();         
-              fy+=0.5;
-              projectile+=1;
-            } else if (projectile%3==1){
-              lightnings.push(new LightningBolt(x1-.5,.95,lz));
-              shootSound.play();
-              projectile+=1;
-            } else{
-              ices.push(new Ice(x1-.5,.95,iz));
-              squirtle.play();
-              projectile+=1;
+          if (frame.hands.length == 2) {
+            var leftHandX = frame.hands[1].stabilizedPalmPosition[0];
+            var rightHandX = frame.hands[0].stabilizedPalmPosition[0];
+            if (leftHandX > rightHandX){
+              leftHandX = frame.hands[0].stabilizedPalmPosition[0];
+              rightHandX = frame.hands[1].stabilizedPalmPosition[0];
             }
-          } else { //right?
-            console.log("RIGHT");
-            if (projectile%3==0){
-              fires.push(new Fireball(x2+.5,.95,fz));   
-              char.play();          
-              fy+=0.5;
-              projectile+=1;
-            } else if (projectile%3==1){
-              lightnings.push(new LightningBolt(x2+.5,.95,lz));
-              shootSound.play();
-              projectile+=1;
-            } else{
-              ices.push(new Ice(x2+.5,.95,iz));
-              squirtle.play();
-              projectile+=1;
+            if (hand.stabilizedPalmPosition[0] == leftHandX){ //left
+              console.log("LEFT");
+              if (projectile%3==0){
+                fires.push(new Fireball(x1-.5,.95,fz));   
+                shootSoundC.play();         
+                fy+=0.5;
+                projectile+=1;
+              } else if (projectile%3==1){
+                lightnings.push(new LightningBolt(x1-.5,.95,lz));
+                shootSoundK.play();
+                projectile+=1;
+              } else{
+                ices.push(new Ice(x1-.5,.95,iz));
+                shootSoundS.play();
+                projectile+=1;
+              }
+            } else { //right?
+              console.log("RIGHT");
+              if (projectile%3==0){
+                fires.push(new Fireball(x2+.5,.95,fz));   
+                shootSoundC.play();                    
+                fy+=0.5;
+                projectile+=1;
+              } else if (projectile%3==1){
+                lightnings.push(new LightningBolt(x2+.5,.95,lz));
+                shootSoundK.play();
+                projectile+=1;
+              } else{
+                ices.push(new Ice(x2+.5,.95,iz));
+                shootSoundS.play();
+                projectile+=1;
+              }
             }
           }
           break;

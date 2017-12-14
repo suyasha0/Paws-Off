@@ -9,7 +9,7 @@ var health = 5; //TEST
 var losePlane;var winPlane; var loseScreen; var winScreen;
 var gameLost = true;
 var gameWon = true;
-var grassHeight = 200;
+var grassHeight = 1000;
 var mewtwo;
 
 //global ground to move in draw
